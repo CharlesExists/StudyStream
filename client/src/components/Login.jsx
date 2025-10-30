@@ -89,7 +89,7 @@ export default function Login() {
 
           <div className="row">
             <p className="muted">
-              Don’t have an account? <a className="link" href="/signup">Join the crew!</a>
+              Don’t have an account? <a className="link" href="/SignUp">Join the crew!</a>
             </p>
             <button className="primary" type="submit" disabled={loading}>
               {loading ? "Logging in…" : "Login"}

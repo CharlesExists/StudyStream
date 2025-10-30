@@ -1,8 +1,16 @@
 import React from "react";
+import { BrowserRouter, Routes, Route} from "react-router-dom";
 import Login from "./components/Login";
+import SignUp from "./components/SignUp";
 
-function App() {
-  return <Login />;  // render it directly
+export default function App() {
+  return (
+    <div>
+      <Routes>
+        <Route index element={<Login/ >} />
+        <Route path="/Login" element={<Login />} />
+        <Route path="/SignUp" element={<SignUp/ >}></Route> 
+      </Routes>
+    </div>
+  )  // render it directly
 }
-
-export default App;
