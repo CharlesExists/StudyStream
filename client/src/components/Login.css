@@ -32,7 +32,7 @@ html,body,#root{ height:100%; }
 
 .brand-text{ 
   font-family: 'Young Serif', serif;
-  font-size:22px; 
+  font-size:22px;  color: #fff;
 }
 
 /* unified centered card */
