@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import "./SignUp.css";
 
 export default function Signup() {
@@ -86,7 +87,7 @@ export default function Signup() {
             type="text"
             placeholder="Enter your username, email, or mobile number"
             value={form.email}
-            onChange={(e) => setForm(f => ({ ...f, name: e.target.value }))}
+            onChange={(e) => setForm(f => ({ ...f, email: e.target.value }))}
             required
           />
 
@@ -98,7 +99,7 @@ export default function Signup() {
               type={showPassword ? "text" : "password"}
               placeholder="Enter your password"
               value={form.password}
-              onChange={(e) => setForm(f => ({ ...f, name: e.target.value }))}
+              onChange={(e) => setForm(f => ({ ...f, password: e.target.value }))}
               required
             />
             <button
@@ -120,7 +121,7 @@ export default function Signup() {
               type={confirm ? "text" : "password"}
               placeholder="Retype your password"
               value={form.confirm}
-              onChange={(e) => setForm(f => ({ ...f, name: e.target.value }))}
+              onChange={(e) => setForm(f => ({ ...f, confirm: e.target.value }))}
               required
             />
             <button
@@ -137,7 +138,7 @@ export default function Signup() {
 
           <div className="row">
             <p className="muted">
-              Already have an account? <a className="link" href="/Login">Log in here!</a>
+              Already have an account? <Link className="link" to="/Login">Log in here!</Link>
             </p>
             <button className="primary" type="submit" disabled={loading}>
               {loading ? "Creating account…" : "Sign Up"}
