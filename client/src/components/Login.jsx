@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "./Login.css";
+import GoogleLogo from '../assets/google.png';
+import StudyStreamLogo from '../assets/studyStreamLogo.png';
 
 export default function Login() {
   const [identifier, setIdentifier] = useState("");
@@ -38,6 +40,7 @@ export default function Login() {
     <div className="auth-shell">
       <header className="brand">
         <div className="logo-mark" aria-hidden />
+        <img src={StudyStreamLogo} alt="StudyStream Logo" className="logo-mark"/>
         <span className="brand-text">StudyStream</span>
       </header>
 
@@ -104,8 +107,6 @@ export default function Login() {
 
 function GoogleIcon() {
   return (
-    <svg className="gicon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
-      <path fill="#EA4335" d="M12 10.2v3.9h5.5c-.2 1.3-1.7 3.9-5.5 3.9-3.3 0-6-2.7-6-6s2.7-6 6-6c1.9 0 3.2.8 4 1.6l2.8-2.7C16.8 3 14.6 2 12 2 6.9 2 2.8 6.1 2.8 11.2S6.9 20.4 12 20.4c6.3 0 8.7-4.4 8.7-6.7 0-.5-.1-.8-.1-1.1H12z"/>
-    </svg>
+    <img src={GoogleLogo} alt="Google logo" className="gicon" width={18} height={18}/>
   );
 }

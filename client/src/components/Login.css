@@ -1,11 +1,21 @@
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;700&family=Young+Serif&display=swap');
+
 :root{
   --bg1:#0ea5e9; --bg2:#1d4ed8;
   --card:#fff; --ink:#111827; --muted:#6b7280; --ring:#3b82f6;
   --rad:22px; --shadow:0 24px 60px rgba(2,6,23,.22);
 }
 
+body{
+  font-family: 'Instrument Sans', system-ui, sans-serif;
+}
+
 *{ box-sizing:border-box; }
 html,body,#root{ height:100%; }
+
+.logo-mark{
+  width: 27px; height: auto;
+}
 
 .auth-shell{
   min-height:100vh;
@@ -20,25 +30,29 @@ html,body,#root{ height:100%; }
   font-weight:800; letter-spacing:.3px; padding-left: max(16px, calc((100% - 880px)/2));
 }
 
-.brand-text{ font-size:22px; }
+.brand-text{ 
+  font-family: 'Young Serif', serif;
+  font-size:22px; 
+}
 
 /* unified centered card */
 .login-card{
-  width:100%; max-width:880px; margin:24px auto 0;
+  width:100%; max-width:880px; height: 593px; margin:24px auto 0;
   background:var(--card); color:var(--ink);
   border-radius: var(--rad);
   box-shadow: var(--shadow);
-  padding: 28px clamp(16px, 3vw, 42px) 26px;
+  padding: 70px clamp(16px, 3vw, 42px) 26px;
   display:flex; flex-direction:column; align-items:center;
 }
 
 .title{
   width:100%;
   text-align:center;
-  font-family: ui-serif, Georgia, "Times New Roman", serif;
+  font-family: 'Young Serif', serif;
   font-size: clamp(22px, 3.2vw, 28px);
   font-weight: 800;
   margin: 4px 0 14px;
+  color: #454545;
 }
 
 .google{
@@ -47,7 +61,9 @@ html,body,#root{ height:100%; }
   background:#fff; border:1px solid #e5e7eb;
   border-radius: 12px; padding: 12px 14px; cursor:pointer;
   box-shadow: 0 4px 16px rgba(2,6,23,.08);
-  font-weight:700;
+  font-weight:700; font-size: 14px;
+  font-family: 'Instrument Sans', system-ui, sans-serif;
+  margin-top: 20px;
 }
 .google:disabled{ opacity:.7; cursor:not-allowed; }
 .gicon{ display:block; }
@@ -62,7 +78,8 @@ html,body,#root{ height:100%; }
 
 .label{
   display:block; color:var(--muted); font-size:13px;
-  margin: 10px 0 6px;
+  margin: 30px 0 10px;
+  color: #454545;
 }
 
 .input{
@@ -80,6 +97,7 @@ html,body,#root{ height:100%; }
   position:absolute; right:8px; top:50%; transform:translateY(-50%);
   background:transparent; border:none; color:var(--ring);
   font-weight:800; font-size:13px; cursor:pointer; padding:4px 6px; border-radius:8px;
+  font-family: 'Instrument Sans', system-ui, sans-serif;
 }
 .pw-toggle:hover{ background:rgba(59,130,246,.10); }
 
@@ -100,9 +118,10 @@ html,body,#root{ height:100%; }
 .primary{
   background: linear-gradient(180deg, #2563eb, #1d4ed8);
   color:#fff; border:none; border-radius:12px;
-  padding:12px 18px; font-weight:800; cursor:pointer;
+  padding:10px 18px; font-weight:800; cursor:pointer;
   box-shadow: 0 8px 18px rgba(29,78,216,.25);
   transition: transform .06s ease, filter .2s ease;
+  font-family: 'Instrument Sans', system-ui, sans-serif; font-size: 13px;
 }
 .primary:hover{ filter: brightness(1.03); }
 .primary:active{ transform: translateY(1px); }
