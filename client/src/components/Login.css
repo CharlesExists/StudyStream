@@ -35,7 +35,6 @@ html,body,#root{ height:100%; }
   font-size:22px;  color: #fff;
 }
 
-/* unified centered card */
 .login-card{
   width:100%; max-width:880px; height: 593px; margin:24px auto 0;
   background:var(--card); color:var(--ink);

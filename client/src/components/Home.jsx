@@ -11,10 +11,12 @@ import Friends from '../assets/calendar.png';
 import Shop from '../assets/friends.png';
 import Profile from '../assets/profile.png';
 import Settings from '../assets/settings.png';
+import Boat from '../assets/boat.png';
 
 export default function Home() {
     const [username, setUsername] = useState("Guest"); 
-    const [coins, setCoins] = useState(0);
+    const [boat, setBoat] = useState(Boat)
+;    const [coins, setCoins] = useState(0);
     const [streak, setStreak] = useState(0);
     return (        
         <div className="home-container">
@@ -45,14 +47,17 @@ export default function Home() {
                         <span className="streak-amount">{streak}</span>
                     </div>
                 </div>
+                <img src={Boat} alt={`${username}'s boat`} className="boat-avatar-home" />
                 <div className="action-wrapper">
                     <div className="actions-section">
+                        <Link to="/SoloStudyStart">
                         <button className="action-btn">Start Study Session</button>
+                        </Link>
                         <button className="action-btn">Invite Friends</button>
                     </div>
                     <div className="quick-start">
                         <h2 className="quick-start-title">Quick Start!</h2>
-                        <h2 className="quick-start-content">Calculus | Flashcards | 1 Hour</h2> {/* need variable for this later --> */}
+                        <h2 className="quick-start-content">Calculus | Flashcards | 1 Hour</h2> {}
                     </div>
                 </div>
             </main>

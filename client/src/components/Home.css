@@ -108,6 +108,13 @@
     flex-direction: row;
 }
 
+.boat-avatar-home{
+    position: absolute;
+    left: 50px; top: 180px;
+    width: 472px; height: 481px;
+    z-index:5;
+}
+
 .coin-counter,
 .streak-counter {
     display: flex;
