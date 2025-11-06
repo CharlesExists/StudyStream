@@ -54,7 +54,7 @@ export default function Signup() {
     <div className="auth-shell">
       <header className="brand">
         <div className="logo-mark" aria-hidden />
-        <span className="brand-text">StudyStream</span>
+        <span className="brand-text-login">StudyStream</span>
       </header>
 
       <section className="login-card" role="main" aria-labelledby="auth-title">

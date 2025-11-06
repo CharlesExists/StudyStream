@@ -1,6 +1,16 @@
 import React, {useState} from "react";
 import { Link, NavLink } from "react-router-dom";
 import "./Home.css";
+import Streak from '../assets/streak.png'; 
+import Coin from '../assets/coin.png';
+import blueLogo from '../assets/blueStudyStreamLogo.png';
+import HomeIcon from '../assets/home.png';
+import Materials from '../assets/materials.png';
+import Calendar from '../assets/calendar.png';
+import Friends from '../assets/calendar.png';
+import Shop from '../assets/friends.png';
+import Profile from '../assets/profile.png';
+import Settings from '../assets/settings.png';
 
 export default function Home() {
     const [username, setUsername] = useState("Guest"); 
@@ -9,10 +19,11 @@ export default function Home() {
     return (        
         <div className="home-container">
             <nav className="menu">
-                <header className="brand">
+                    <header className="brand">
                     <div className="logo-mark" aria-hidden />
+                    <img src={blueLogo} alt="Blue StudyStream Logo" className="logo-mark"/>
                     <span className="brand-text">StudyStream</span>
-                </header>
+                      </header>
                 <Link className="menuLink" to="/Home">Home</Link>
                 <Link className="menuLink" to="/Materials">Materials</Link>
                 <Link className="menuLink" to="/Calendar">Calendar</Link>
@@ -26,11 +37,11 @@ export default function Home() {
                 <div className="welcome-section">
                     <h1 className="welcome-text">Welcome, {username}!</h1>
                     <div className="coin-counter">
-                        <img src="/assets/coin.png" alt="Coins" className="coin-image" />
+                        <img src={Coin} alt="Coins" className="coin-image" />
                         <span className="coin-amount">{coins}</span>
                     </div>
                     <div className="streak-counter">
-                        <img src="/assets/streak.png" alt="Streaks" className="streak-image" />
+                        <img src={Streak} alt="Streaks" className="streak-image" />
                         <span className="streak-amount">{streak}</span>
                     </div>
                 </div>
