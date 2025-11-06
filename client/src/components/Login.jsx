@@ -45,12 +45,10 @@ export default function Login() {
       </header>
 
       <section className="login-card" role="main" aria-labelledby="auth-title">
-        {/* Figma-style title pill */}
         <div className="title-pill">
           <h1 id="auth-title" className="title">Ahoy there!</h1>
         </div>
 
-        {/* Narrower Google button like mock */}
         <button type="button" className="google" onClick={onGoogle} disabled={loading}>
           <GoogleIcon />
           <span>Continue with Google</span>
