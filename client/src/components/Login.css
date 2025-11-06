@@ -30,7 +30,7 @@ html,body,#root{ height:100%; }
   font-weight:800; letter-spacing:.3px; padding-left: max(16px, calc((100% - 880px)/2));
 }
 
-.brand-text{ 
+.brand-text-login{ 
   font-family: 'Young Serif', serif;
   font-size:22px;  color: #fff;
 }
@@ -112,7 +112,7 @@ html,body,#root{ height:100%; }
 }
 
 .muted{ color:var(--muted); font-size:14px; }
-.link{ color:var(--ring); font-weight:800; text-decoration:none; }
+.link{ color:#A4E5FF; font-weight:800; text-decoration:none; }
 .link:hover{ text-decoration:underline; }
 
 .primary{

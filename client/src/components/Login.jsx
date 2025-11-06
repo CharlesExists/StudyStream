@@ -41,7 +41,7 @@ export default function Login() {
       <header className="brand">
         <div className="logo-mark" aria-hidden />
         <img src={StudyStreamLogo} alt="StudyStream Logo" className="logo-mark"/>
-        <span className="brand-text">StudyStream</span>
+        <span className="brand-text-login">StudyStream</span>
       </header>
 
       <section className="login-card" role="main" aria-labelledby="auth-title">
