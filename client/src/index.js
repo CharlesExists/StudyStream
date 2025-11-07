@@ -1,11 +1,14 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import { BrowserRouter } from 'react-router-dom';
-import './index.css';
-import App from './App';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { BrowserRouter } from "react-router-dom";
+import "./index.css";
+import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+// Create the root first
+const root = ReactDOM.createRoot(document.getElementById("root"));
+
+// Render once
 root.render(
   <React.StrictMode>
     <BrowserRouter>
@@ -14,4 +17,5 @@ root.render(
   </React.StrictMode>
 );
 
+// Optional: keep this if you want CRA performance metrics
 reportWebVitals();
