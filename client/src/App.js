@@ -1,25 +1,26 @@
-import logo from './logo.svg';
-import './App.css';
 
-function App() {
+import React from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
+import Login from "./components/Login";
+import SignUp from "./components/SignUp";
+import Home from "./components/Home";
+import SoloStudyStart from './components/SoloStudyStart';
+import Materials from "./components/Materials";
+import CreateNotesScreen from "./components/CreateNotesScreen.jsx";
+
+export default function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <Routes>
+        <Route index element={<Login/ >} />
+        <Route path="/Login" element={<Login />} />
+        <Route path="/SignUp" element={<SignUp />}></Route> 
+        <Route path="/Home" element={<Home />}></Route> 
+        <Route path="/SoloStudyStart" element={<SoloStudyStart />}></Route> 
+        <Route path="/" element={<Navigate to="/Materials" replace />} />
+        <Route path="/Materials" element={<Materials />}></Route>
+        <Route path="/materials/create" element={<CreateNotesScreen />} />
+      </Routes>
     </div>
-  );
+  )  // render it directly
 }
-
-export default App;
