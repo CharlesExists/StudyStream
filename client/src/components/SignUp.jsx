@@ -57,7 +57,7 @@ export default function Signup() {
         <span className="brand-text-login">StudyStream</span>
       </header>
 
-      <section className="login-card" role="main" aria-labelledby="auth-title">
+      <section className="signin-card" role="main" aria-labelledby="auth-title">
         <div className="title-pill">
           <h1 id="auth-title" className="title">Sign Up</h1>
         </div>
