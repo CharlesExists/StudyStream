@@ -7,6 +7,12 @@
     --ring: #bfe3ff;
     --bg-gradient-start: #38bdf8;
     --bg-gradient-end: #3b82f6;
+    --button-hover: #a2e3ff;
+    --horizon: 56%;
+    --sky-top:   #4ACBFF;
+    --sky-bot:   #E6F8FF;
+    --sea-top:   #1AABE5;
+    --sea-bot:   #2466DB;
 }
 
 .menu {
@@ -48,8 +54,9 @@
     border-radius: 16px;
     font-weight: 700; font-size: 18px;
     color: var(--text);
+    font-size: 20px;
     text-decoration: none;
-    line-height: 1;
+    line-height: 1.5;
     transition: background 140ms ease, color 140ms ease, transform 80ms ease;
 }
 
@@ -60,8 +67,9 @@
 }
 
 .menuLink:hover {
-    background: #A4E5FF;
+    background: var(--button-hover);
 }
+
 .menuLink:focus-visible {
     outline: 2px solid var(--primary);
     outline-offset: 2px;
@@ -94,6 +102,11 @@
 
 .main-content {
     margin-left: 240px;
+      background:
+    /* SKY */
+    linear-gradient(180deg, var(--sky-top) 0%, var(--sky-bot) 100%) top/100% var(--horizon) no-repeat,
+    /* OCEAN */
+    linear-gradient(180deg, var(--sea-top) 0%, var(--sea-bot) 100%) bottom/100% calc(100% - var(--horizon)) no-repeat;
     flex: 1;
     background: linear-gradient(180deg, #4ACBFF 0%, #c1e7f7 60%);
     min-height: 100vh;
