@@ -3,6 +3,9 @@ import { Link } from "react-router-dom";
 import "./Login.css";
 import GoogleLogo from '../assets/google.png';
 import StudyStreamLogo from '../assets/studyStreamLogo.png';
+import { auth, googleProvider } from "../firebase";
+import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth"; //firebase imports 
+
 
 export default function Login() {
   const [identifier, setIdentifier] = useState("");
@@ -16,19 +19,24 @@ export default function Login() {
     setErr("");
     setLoading(true);
     try {
-      console.log("Logged in");
-    } catch (e) {
-      setErr(e.message || "Login failed.");
-    } finally {
-      setLoading(false);
-    }
+        // backend stuff
+        const userCredential = await signInWithEmailAndPassword(auth, identifier, password);
+        console.log("Logged in as:", userCredential.user);
+        alert(`Welcome back, ${userCredential.user.displayName || "User"}!`);
+      } catch (e) {
+        setErr(e.message || "Login failed.");
+      } finally {
+        setLoading(false);
+      }
   };
 
   const onGoogle = async () => {
     setErr("");
     setLoading(true);
-    try {
-      console.log("Google sign-in");
+    try { // more backend stuff
+      const result = await signInWithPopup(auth, googleProvider);
+      console.log("Google sign-in successful:", result.user);
+      alert(`Signed in as ${result.user.displayName}`);
     } catch (e) {
       setErr(e.message || "Google sign-in failed.");
     } finally {

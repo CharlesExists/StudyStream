@@ -11,5 +11,24 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
 
+console.log("Firebase Admin initialized for project:", serviceAccount.project_id); // log file to show that hte firebase is up and running for the project 
+
 export const auth = admin.auth();
 export const db = admin.firestore();
+
+
+const testConnection = async () => { // code that will show that the firebase
+  // and github code are connected. if you run firebase.js in server in terminal, firestore write succesful should appear. 
+  try {
+    const docRef = db.collection("connectionTest").doc("adminCheck");
+    await docRef.set({ success: true, time: new Date() });
+    console.log("Firestore write successful");
+  } catch (err) {
+    console.error("Firestore test failed:", err);
+  }
+};
+testConnection();
+
+
+
+
