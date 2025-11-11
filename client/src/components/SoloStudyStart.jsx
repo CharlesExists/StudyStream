@@ -1,27 +1,26 @@
-import React, { useState } from "react";
-import "./SoloStudyStart.css";
+import React, {useState} from "react";
+import { Link, NavLink } from "react-router-dom";import "./SoloStudyStart.css";
+import "./Home.css";
 import blueLogo from "../assets/blueStudyStreamLogo.png";
-import Boat from "../assets/boat.png";
-import { Link, NavLink } from "react-router-dom";
+import homeIcon from '../assets/home.png';
 
-export default function SoloStudyStart({ username, defaultBoat }) {
-  const [boat, setBoat] = useState(defaultBoat);
-
-  return (
-    <div className="solostart-container">
-      <header className="brand solostart-logo">
-        <img src={blueLogo} alt="Blue StudyStream Logo" className="logo-mark" />
-        <span className="brand-text">StudyStream</span>
-        <Link to="/Home" className ="home-btn">Home</Link>
-      </header>
-
-      <div className="water"></div>
-
-      <img src={Boat} alt={`${username}'s boat`} className="boat-avatar-start" />
-
-      <div className="study-options">
-        <h1 className="study-title">Solo Study Start</h1>
-      </div>
-    </div>
+export default function SoloStudyStart() {
+    const materials = ["Calculus I", "Chemistry"];
+    const [selectedMaterial, setSelectedMaterial] = useState(materials[0]);
+    const [sessionType, setSessionType] = useState("Quiz");
+    return (
+        <div className="solo-start">
+            <div className="logo-wrapper">
+                <img src={blueLogo} alt="StudyStream Logo" className="logo-mark" />
+                <span className="brand-text">StudyStream</span>
+            </div>
+            <div className="home-button-wrapper">
+                <Link to="/Home">
+                <button className="home-button">
+                <img src={homeIcon} alt="Home Icon" width="20" height="20" />Return Home</button>
+                </Link>
+            </div>
+            <div className="water-solo"></div>
+        </div>
   );
 }
