@@ -32,7 +32,8 @@ html,body,#root{ height:100%; }
 
 .brand-text-login{ 
   font-family: 'Young Serif', serif;
-  font-size:22px;  color: #fff;
+  font-size:22px;
+  color: #fff;
 }
 
 .login-card{
@@ -111,7 +112,7 @@ html,body,#root{ height:100%; }
 }
 
 .muted{ color:var(--muted); font-size:14px; }
-.link{ color:#A4E5FF; font-weight:800; text-decoration:none; }
+.link{ color: var(--primary); font-weight:800; text-decoration:none; }
 .link:hover{ text-decoration:underline; }
 
 .primary{
