@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "./SignUp.css";
+import { auth, googleProvider } from "../firebase";
+import { createUserWithEmailAndPassword, updateProfile, signInWithPopup } from "firebase/auth"; // added firebase imports
+
 
 export default function Signup() {
     const [form, setForm] = useState({ 
@@ -27,22 +30,27 @@ export default function Signup() {
         setLoading(true);
         const { name, value } = e.target;
         setForm((f) => ({ ...f, [name]: value }));
+
+        // backend stuff
         try {
-        //insert backend stuff later
-        console.log("Signed up.");
+          const userCredential = await createUserWithEmailAndPassword(auth, form.email, form.password);
+          await updateProfile(userCredential.user, { displayName: form.name });
+          console.log("Signed up:", userCredential.user);
+          alert(`Welcome ${form.name}!`);
         } catch (e) {
-        setError(e.message || "Signup failed.");
+          setError(e.message || "Signup failed.");
         } finally {
-        setLoading(false);
+          setLoading(false);
         }
-    };
+      };
 
     const onGoogle = async () => {
         setError("");
         setLoading(true);
-        try {
-        console.log("Google sign-in");
-        //backend stuff
+        try {// backend stuff
+        const result = await signInWithPopup(auth, googleProvider);
+        console.log("Google sign-in:", result.user);
+        alert(`Signed in as ${result.user.displayName}`);
         } catch (e) {
         setError(e.message || "Google sign-in failed.");
         } finally {
