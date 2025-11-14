@@ -25,13 +25,24 @@ export default function CreateNotesScreen() {
           </button>
 
           <div className="ss-upload-card">
-            <div className="ss-dropzone">
+            <div
+              className="ss-dropzone"
+              onClick={openFile}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  openFile();
+                }
+            }}>
               <UploadCloud/>
               <h2 className="ss-upload-title">Upload sources</h2>
               <p className="ss-upload-sub">Supported file types: PDF, txt, docx</p>
               <div className="ss-drop-dashed" />
               <input
                 ref={inputRef}
+                id="file-input"
                 type="file"
                 accept=".pdf,.txt,.doc,.docx"
                 multiple

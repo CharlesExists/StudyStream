@@ -31,7 +31,7 @@ export default function Signup() {
         const { name, value } = e.target;
         setForm((f) => ({ ...f, [name]: value }));
 
-        // backend stuff
+        // backend
         try {
           const userCredential = await createUserWithEmailAndPassword(auth, form.email, form.password);
           await updateProfile(userCredential.user, { displayName: form.name });
@@ -75,7 +75,7 @@ export default function Signup() {
           <span>Continue with Google</span>
         </button>
 
-        <form className="form" onSubmit={onSubmit} noValidate>
+        <form className="form" onSubmit={onSubmit}>
           <label htmlFor="name" className="label">Name</label>
           <input
             id="name"
@@ -87,13 +87,13 @@ export default function Signup() {
             onChange={(e) => setForm(f => ({ ...f, name: e.target.value }))}
             required
           />
-          <label htmlFor="identifier" className="label">Username, Email, or Phone</label>
+          <label htmlFor="identifier" className="label">Email</label>
           <input
             id="identifier"
             name="email"
             className="input"
             type="text"
-            placeholder="Enter your username, email, or mobile number"
+            placeholder="Enter your email"
             value={form.email}
             onChange={(e) => setForm(f => ({ ...f, email: e.target.value }))}
             required
