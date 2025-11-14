@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./Login.css";
 import GoogleLogo from '../assets/google.png';
 import StudyStreamLogo from '../assets/studyStreamLogo.png';
@@ -13,6 +13,7 @@ export default function Login() {
   const [showPw, setShowPw]       = useState(false);
   const [loading, setLoading]     = useState(false);
   const [err, setErr]             = useState("");
+  const navigate = useNavigate();
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -23,6 +24,7 @@ export default function Login() {
         const userCredential = await signInWithEmailAndPassword(auth, identifier, password);
         console.log("Logged in as:", userCredential.user);
         alert(`Welcome back, ${userCredential.user.displayName || "User"}!`);
+        navigate("/Home");
       } catch (e) {
         setErr(e.message || "Login failed.");
       } finally {

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./SignUp.css";
 import { auth, googleProvider } from "../firebase";
 import { createUserWithEmailAndPassword, updateProfile, signInWithPopup } from "firebase/auth"; // added firebase imports
@@ -16,6 +16,7 @@ export default function Signup() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [showPassword, setShowPassword] = useState(false);
+    const navigate = useNavigate();
 
     const onSubmit = async (e) => {
         e.preventDefault(); //prevents default action of browser
@@ -37,6 +38,7 @@ export default function Signup() {
           await updateProfile(userCredential.user, { displayName: form.name });
           console.log("Signed up:", userCredential.user);
           alert(`Welcome ${form.name}!`);
+          navigate("/Login");
         } catch (e) {
           setError(e.message || "Signup failed.");
         } finally {

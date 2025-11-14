@@ -131,7 +131,7 @@
 
 .boat-container{
     position: static;
-    width: 100%;
+    width: 100%
 }
 
 .dock-img{
@@ -146,8 +146,8 @@
 
 .boat-avatar-home{
     position: absolute;
-    left: 120px; top: 240px;
-    width: 452px; height: 481px;
+    left: 120px; top: 20vh;
+    width: 30vw; height: auto;
     z-index: 5;
 }
 
