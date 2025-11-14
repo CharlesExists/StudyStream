@@ -62,13 +62,13 @@ export default function Login() {
           <span>Continue with Google</span>
         </button>
 
-        <form className="form" onSubmit={onSubmit} noValidate>
-          <label htmlFor="identifier" className="label">Username, Email, or Phone</label>
+        <form className="form" onSubmit={onSubmit}>
+          <label htmlFor="identifier" className="label">Email</label>
           <input
             id="identifier"
             className="input"
-            type="text"
-            placeholder="Enter your username, email, or mobile number"
+            type="email"
+            placeholder="Enter your email"
             value={identifier}
             onChange={(e) => setIdentifier(e.target.value)}
             required
