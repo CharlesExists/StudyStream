@@ -8,6 +8,7 @@ import Home from "./components/Home";
 import SoloStudyStart from './components/SoloStudyStart';
 import Materials from "./components/Materials";
 import CreateNotesScreen from "./components/CreateNotesScreen.jsx";
+import InviteFriendsStart from "./components/InviteFriendsStart.jsx";
 
 export default function App() {
   return (
@@ -22,6 +23,7 @@ export default function App() {
           <Route path="/" element={<Navigate to="/Materials" replace />} />
           <Route path="/Materials" element={<Materials />}></Route>
           <Route path="/materials/create" element={<CreateNotesScreen />} />
+          <Route path="/invite" element={<InviteFriendsStart />} />
         </Route>
       </Routes>
     </div>
