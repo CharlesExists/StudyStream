@@ -17,6 +17,7 @@ import Dock from '../assets/fullDock.png';
 export default function Home() {
     const [username, setUsername] = useState("Guest"); 
     const [boat, setBoat] = useState(Boat);
+    localStorage.setItem("userBoat",Boat);
     const [coins, setCoins] = useState(0);
     const [streak, setStreak] = useState(0);
     return (

@@ -1,8 +1,10 @@
 .solo-start {
-    min-height: 100vh;
+    min-height: 100vh; width: 100%;
+    margin-left: 0; padding-left: 20px; width: 100%;
     background: linear-gradient(180deg, #A4E5FF 51.44%, #E6F8FF 65.87%);
-    padding: 40px 60px; position: relative;
+    padding: 40px 20px; position: relative;
     font-family: "Instrument Sans", sans-serif;
+    align-items: center;
 }
 
 .logo-wrapper {
@@ -10,6 +12,24 @@
     top: -5px; left: -25px;
     align-items: center;
     gap: 10px;          
+}
+
+.solo-content-wrapper {
+    position: relative; z-index: 1;
+    display: flex; flex-direction: column; 
+}
+
+ .water-solo {
+    width: 1520px; height: 245px;
+    flex-shrink: 0;
+    background: linear-gradient(180deg, #1AABE5 21.15%, #2466DB 100%);
+    position: absolute; top: 410px; left: 50%; transform: translateX(-50%);
+    z-index: 0;
+}
+
+.boat-avatar-solo{
+    position: absolute; transform: translateX(-50%);
+    bottom: 40px; left: 50%;
 }
 
 .home-button {
@@ -31,9 +51,324 @@
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
 }
 
- .water-solo {
-    width: 1520px; height: 245px;
-    flex-shrink: 0;
-    background: linear-gradient(180deg, #1AABE5 21.15%, #2466DB 100%);
-    position: absolute; margin-top: 410px; margin-left: -70px;
+.settings-card-solo {
+  background: white;
+  border-radius: 20px;
+  padding: 40px 48px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  display: flex;
+  flex-direction: column;
+  gap: 32px; 
+}
+
+.settings-row-solo {
+  background-color: #E6F8FF;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.row-label-solo {
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+  min-width: 120px;
+}
+
+/* Notes Selection */
+.notes-selection {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #A4E5FF;
+  border: 3px solid #A4E5FF;
+  border-radius: 16px;
+  padding: 16px 24px;
+  max-width: 600px;
+}
+
+.notes-icon {
+  width: 28px;
+  height: 28px;
+  background: #2466DB;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.notes-text {
+  font-size: 20px;
+  font-weight: 600;
+  color: #2466DB;
+}
+
+/* Type Buttons */
+.type-buttons {
+  display: flex;
+  gap: 20px;
+  flex: 1;
+}
+
+.mode-button {
+  flex: 1;
+  max-width: 280px;
+  padding: 18px 32px;
+  border: none;
+  border-radius: 16px;
+  font-size: 22px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.quiz-button {
+  background: #6337b0;
+  color: white;
+}
+
+.quiz-button:hover {
+  background: #532d91;
+}
+
+.quiz-button.active {
+  background: #5B33A2;
+  box-shadow: 0 6px 16px rgba(123, 95, 181, 0.4);
+  transform: translateY(-2px);
+}
+
+.flashcards-button {
+  background: #e8b8c0;
+  color: #8b3a4a;
+}
+
+.flashcards-button:hover {
+  background: #d8a8b0;
+}
+
+.flashcards-button.active {
+  background: #d39aa8;
+  box-shadow: 0 6px 16px rgba(232, 184, 192, 0.4);
+  transform: translateY(-2px);
+}
+
+/* Timer Row */
+.timer-row {
+  align-items: stretch;
+}
+
+.timer-controls {
+  flex: 1;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.timer-buttons {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.timer-button {
+  padding: 14px 24px;
+  border: none;
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: 600;
+  color: white;
+  background: #1AABE5;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 10px rgba(61, 168, 216, 0.3);
+  white-space: nowrap;
+}
+
+.timer-button:hover {
+  background: #2d98c8;
+}
+
+.timer-button.active {
+  background: #4285F4;
+  box-shadow: 0 6px 14px rgba(40, 120, 184, 0.4);
+  transform: translateY(-2px);
+}
+
+/* Start Button */
+.start-button {
+  padding: 18px 48px;
+  border: none;
+  border-radius: 16px;
+  font-size: 28px;
+  font-weight: 700;
+  color: white;
+  background: #4285F4;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 6px 16px rgba(75, 168, 224, 0.4);
+  font-style: italic;
+  margin-left: auto;
+}
+
+.start-button:hover {
+  background: #3d7de2;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(75, 168, 224, 0.5);
+}
+
+.start-button:active {
+  transform: translateY(0);
+}
+
+/* Blue pill container */
+.notes-selection {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: #9DD9FF;   
+  padding: 12px 20px;
+  border-radius: 40px;
+  min-width: 260px;
+  cursor: pointer;
+  box-shadow: 0px 4px 9px rgba(0, 0, 0, 0.25);
+  position: relative;
+}
+
+/* Icon on the left inside pill */
+.notes-icon {
+  width: 28px;
+  height: 28px;
+  background-color: #4285F4;  
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+
+/* Text inside pill */
+.notes-text {
+  font-size: 18px;
+  font-weight: 500;
+  color: #2466DB;           
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Arrow */
+.dropdown-arrow {
+  margin-left: auto;
+  font-size: 16px;
+  transition: transform 0.2s ease;
+}
+
+.dropdown-arrow.open {
+  transform: rotate(180deg);
+}
+
+.notes-circle {
+  width: 32px;
+  height: 32px;
+  background: #2466DB;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  transition: transform 0.25s ease;
+}
+
+/* rotate arrow when open */
+.notes-circle.open {
+  transform: rotate(180deg);
+}
+
+/* ============================
+   DROPDOWN MENU
+   ============================ */
+/* The wrapper around the pill + menu */
+.notes-wrapper {
+  position: relative;      /* so the menu is positioned under this */
+}
+
+.notes-dropdown-menu {
+  position: absolute;
+  top: 110%;                  /* sits right below the pill */
+  left: 0;
+  background: white;
+  width: 100%;
+  border-radius: 12px;
+  padding: 8px 0;
+  list-style: none;
+  box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.20);
+  z-index: 50;
+  animation: dropdownFade 0.18s ease-out;
+}
+
+/* Each dropdown item */
+.notes-dropdown-item {
+  padding: 10px 16px;
+  font-size: 16px;
+  color: #1B2A4A;
+  cursor: pointer;
+}
+
+.notes-dropdown-item:hover {
+  background-color: #E7F2FF;
+}
+
+/* Simple fade animation */
+@keyframes dropdownFade {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0px);
+  }
+}
+
+
+/* Responsive */
+@media (max-width: 768px) {
+  .content-wrapper {
+    max-width: 100%;
+  }
+
+  .settings-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .row-label {
+    min-width: auto;
+  }
+
+  .type-buttons,
+  .timer-controls {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .mode-button,
+  .timer-button {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .start-button {
+    width: 100%;
+    margin-left: 0;
+  }
 }
