@@ -5,7 +5,6 @@ export const firestoreStructure = {
          name: "string",
          bio: "string",
          xp: "number",
-         level: "number",
          unlockedItems: ["string"],
    
          // each user has its own set of basic info

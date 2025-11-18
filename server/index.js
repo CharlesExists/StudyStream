@@ -2,6 +2,8 @@ import "./firebase.js";
 import express from "express";
 import { verifyToken } from "./middleware/authMiddleware.js";
 import authRoutes from "./routes/authRoutes.js";
+import sessionRoutes from "./routes/sessionRoutes.js";
+
 
 const app = express();
 
@@ -9,6 +11,9 @@ const app = express();
 app.use(express.json());
 
 app.use("/", authRoutes);
+
+app.use("/", sessionRoutes);
+
 
 app.get("/protected", verifyToken, (req, res) =>{
     res.json({message: `Welcome, ${req.user.email}`});
