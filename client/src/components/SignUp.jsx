@@ -3,6 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import "./SignUp.css";
 import { auth, googleProvider } from "../firebase";
 import { createUserWithEmailAndPassword, updateProfile, signInWithPopup } from "firebase/auth"; // added firebase imports
+import { db } from "../firebase";
+import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 
 
 export default function Signup() {
@@ -36,6 +38,20 @@ export default function Signup() {
         try {
           const userCredential = await createUserWithEmailAndPassword(auth, form.email, form.password);
           await updateProfile(userCredential.user, { displayName: form.name });
+
+          const uid = userCredential.user.uid;
+
+          await setDoc(doc(db, "users", uid), {
+            name: form.name,
+            email: form.email,
+            bio: "",
+            xp: 0,
+            unlockedItems: [],
+            createdAt: serverTimestamp(),
+          });
+          
+
+
           console.log("Signed up:", userCredential.user);
           alert(`Welcome ${form.name}!`);
           navigate("/Login");
