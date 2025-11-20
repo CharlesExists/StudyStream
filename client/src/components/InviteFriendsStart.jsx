@@ -1,40 +1,33 @@
 import React, { useState } from "react";
 import "./InviteFriendsStart.css";
-
-// Fake dropdown data
-const fakeMaterials = [
-  { id: "1", title: "Calculus I" },
-  { id: "2", title: "Discrete Math – HW 3" },
-  { id: "3", title: "Psychology – Exam Review" },
-  { id: "4", title: "French Vocabulary Set" }
-];
+import { useMaterials } from "../components/MaterialsContext";
 
 function InviteFriendsStart() {
   const [selectedMode, setSelectedMode] = useState("quiz");
   const [selectedTimer, setSelectedTimer] = useState("45");
   const [friends] = useState(["Sarah", "Andrew"]);
-
-  // Dropdown state
-  const [materials] = useState(fakeMaterials);
-  const [selectedMaterialId, setSelectedMaterialId] = useState(fakeMaterials[0].id);
   const [isNotesOpen, setIsNotesOpen] = useState(false);
+  const [selectedMaterialId, setSelectedMaterialId] = useState(null);
 
+  // ✅ shared materials coming from context (Materials page writes to this)
+  const { materials } = useMaterials();
+
+  // pick either the explicitly selected one or default to the first material
   const selectedMaterial =
-    materials.find((m) => m.id === selectedMaterialId) || null;
+    materials.find((m) => m.id === selectedMaterialId) || materials[0] || null;
 
   const handleStart = () => {
     console.log("Starting study session:", {
       mode: selectedMode,
       timer: selectedTimer,
-      friends: friends,
-      notes: selectedMaterial?.title
+      friends,
+      notes: selectedMaterial?.title || null,
     });
   };
 
   return (
     <div className="invite-friends-container">
       <div className="content-wrapper">
-        
         {/* ---------------- TOP CARD ---------------- */}
         <div className="invite-card">
           <div className="search-bar">
@@ -58,32 +51,34 @@ function InviteFriendsStart() {
 
         {/* ---------------- SETTINGS CARD ---------------- */}
         <div className="settings-card">
-
           {/* NOTES ROW */}
           <div className="settings-row">
             <label className="row-label">Notes:</label>
 
-            {/* Wrapper needed for dropdown positioning */}
             <div className="notes-wrapper">
-              {/* Blue pill */}
               <div
                 className="notes-selection"
                 onClick={() => setIsNotesOpen((prev) => !prev)}
               >
-               <span className={`notes-circle ${isNotesOpen ? "open" : ""}`}>
-                 ⌄
+                <span className={`notes-circle ${isNotesOpen ? "open" : ""}`}>
+                  ⌄
                 </span>
 
-              <span className="notes-text">
-               {selectedMaterial ? selectedMaterial.title : "Choose notes"}
-              </span>
-
-        
+                <span className="notes-text">
+                  {selectedMaterial
+                    ? selectedMaterial.title
+                    : materials.length === 0
+                    ? "No notes yet"
+                    : "Choose notes"}
+                </span>
               </div>
 
-              {/* Dropdown list */}
               {isNotesOpen && (
                 <ul className="notes-dropdown-menu">
+                  {materials.length === 0 && (
+                    <li className="notes-dropdown-item">No notes available</li>
+                  )}
+
                   {materials.map((m) => (
                     <li
                       key={m.id}
@@ -181,7 +176,6 @@ function InviteFriendsStart() {
               </button>
             </div>
           </div>
-
         </div>
       </div>
     </div>
