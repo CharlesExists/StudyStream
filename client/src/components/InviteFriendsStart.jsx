@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 import "./InviteFriendsStart.css";
 import { useMaterials } from "../components/MaterialsContext";
+import { useNavigate } from "react-router-dom";
 
 function InviteFriendsStart() {
+  const navigate = useNavigate();
+
   const [selectedMode, setSelectedMode] = useState("quiz");
   const [selectedTimer, setSelectedTimer] = useState("45");
   const [friends] = useState(["Sarah", "Andrew"]);
@@ -17,11 +20,16 @@ function InviteFriendsStart() {
     materials.find((m) => m.id === selectedMaterialId) || materials[0] || null;
 
   const handleStart = () => {
-    console.log("Starting study session:", {
-      mode: selectedMode,
-      timer: selectedTimer,
-      friends,
-      notes: selectedMaterial?.title || null,
+    if (!selectedMaterial) return; // nothing to study with
+
+    // navigate to GroupStudySession and pass everything we need
+    navigate("/GroupStudySession", {
+      state: {
+        materialId: selectedMaterial.id,
+        timerMinutes: Number(selectedTimer), // "45" -> 45
+        mode: selectedMode,                  // "quiz" or "flashcards"
+        friends,                             // ["Sarah", "Andrew"]
+      },
     });
   };
 
