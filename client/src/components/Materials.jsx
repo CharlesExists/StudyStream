@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import "./Materials.css";
+import { useMaterials } from "../components/MaterialsContext";
 
 /* --- tiny inline SVGs --- */
 const PlusOutline = () => (
@@ -11,14 +11,14 @@ const PlusOutline = () => (
 );
 const PaperFold = () => (
   <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true" className="ss-paper">
-    <rect x="1" y="1" width="16" height="16" rx="3"/>
+    <rect x="1" y="1" width="16" height="16" rx="3" />
     <path d="M11 1 v6 h6" className="fold" />
   </svg>
 );
 const Pencil = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" className="ss-pencil">
-    <path className="body" d="M3 17.25V21h3.75L19.81 7.94l-3.75-3.75L3 17.25z"/>
-    <path className="tip" d="M14.06 4.19l3.75 3.75"/>
+    <path className="body" d="M3 17.25V21h3.75L19.81 7.94l-3.75-3.75L3 17.25z" />
+    <path className="tip" d="M14.06 4.19l3.75 3.75" />
   </svg>
 );
 const KebabIco = () => (
@@ -31,18 +31,33 @@ const KebabIco = () => (
 
 /* building blocks */
 function CardShell({ children, className = "", ...props }) {
-  return <div className={`ss-card ${className}`} {...props}>{children}</div>;
+  return (
+    <div className={`ss-card ${className}`} {...props}>
+      {children}
+    </div>
+  );
 }
+
 function CreateCard({ onClick }) {
   return (
     <CardShell
       className="ss-card-create"
       role="button"
       tabIndex={0}
-      onClick={(e)=>{ e.preventDefault(); onClick?.(); }}
-      onKeyDown={(e)=>{ if(e.key==="Enter"){ e.preventDefault(); onClick?.(); } }}
+      onClick={(e) => {
+        e.preventDefault();
+        onClick?.();
+      }}
+      onKeyDown={(e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          onClick?.();
+        }
+      }}
     >
-      <div className="ss-create-icon"><PlusOutline /></div>
+      <div className="ss-create-icon">
+        <PlusOutline />
+      </div>
       <div className="ss-create-text">Create new notes</div>
     </CardShell>
   );
@@ -52,11 +67,15 @@ function MaterialCard({ item, isMenuOpen, onOpenMenu, onDelete }) {
   const menuRef = useRef(null);
 
   useEffect(() => {
-    function onDocClick(e){
+    function onDocClick(e) {
       if (!isMenuOpen) return;
-      if (menuRef.current && !menuRef.current.contains(e.target)) onOpenMenu(null);
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
+        onOpenMenu(null);
+      }
     }
-    function onEsc(e){ if(e.key === "Escape") onOpenMenu(null); }
+    function onEsc(e) {
+      if (e.key === "Escape") onOpenMenu(null);
+    }
     document.addEventListener("mousedown", onDocClick);
     document.addEventListener("keydown", onEsc);
     return () => {
@@ -81,7 +100,7 @@ function MaterialCard({ item, isMenuOpen, onOpenMenu, onDelete }) {
             aria-label={`More actions for ${item.title}`}
             onClick={() => onOpenMenu(isMenuOpen ? null : item.id)}
           >
-            <KebabIco/>
+            <KebabIco />
           </button>
 
           {isMenuOpen && (
@@ -89,7 +108,10 @@ function MaterialCard({ item, isMenuOpen, onOpenMenu, onDelete }) {
               <button
                 role="menuitem"
                 className="ss-menu-item ss-danger"
-                onClick={() => { onDelete(item.id); onOpenMenu(null); }}
+                onClick={() => {
+                  onDelete(item.id);
+                  onOpenMenu(null);
+                }}
               >
                 Delete
               </button>
@@ -109,34 +131,123 @@ function MaterialCard({ item, isMenuOpen, onOpenMenu, onDelete }) {
 
 /* === Materials page === */
 export default function Materials() {
-  const navigate = useNavigate();
+  const { materials, addMaterial, deleteMaterial } = useMaterials(); // 👈 shared list
   const [active, setActive] = useState("All");
-  const [materials, setMaterials] = useState([
-    { id: "create", type: "create" },
-    { id: "calc", title: "Calculus I", date: "Oct 26, 2025", sub: "Shared by Sarah", icon: <PaperFold/> },
-    { id: "chem", title: "Chemistry",  date: "Oct 21, 2025", icon: <Pencil/> },
-  ]);
   const [openMenuId, setOpenMenuId] = useState(null);
 
-  const items = active === "All"
-    ? materials
-    : materials.filter(m => m.id === "calc" || m.type === "create");
+  // upload + modal state
+  const fileInputRef = useRef(null);
+  const [showModal, setShowModal] = useState(false);
+  const [pendingFile, setPendingFile] = useState(null);
+  const [newTitle, setNewTitle] = useState("");
 
-  const handleDelete = (id) => setMaterials(prev => prev.filter(m => m.id !== id));
+  // open OS file picker when "Create new notes" clicked
+  const handleCreateClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setPendingFile(file);
+    const baseName = file.name.replace(/\.[^/.]+$/, "");
+    setNewTitle(baseName);
+    setShowModal(true);
+
+    // allow re-selecting same file later
+    e.target.value = "";
+  };
+
+  const handleModalClose = () => {
+    setShowModal(false);
+    setPendingFile(null);
+    setNewTitle("");
+  };
+
+  // share = true ➜ "Save & share with friends"
+  // share = false ➜ "Save (just for me)"
+  const handleSaveMaterial = (e, share) => {
+    e.preventDefault();
+    if (!newTitle.trim()) return;
+
+    const now = new Date();
+    const dateStr = now.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
+
+    addMaterial({
+      id: crypto.randomUUID(),
+      title: newTitle.trim(),
+      date: dateStr,
+      sub: share ? "Shared by Sarah" : "",
+      shared: share,
+      iconType: "paper",
+    });
+
+    handleModalClose();
+  };
+
+  // Filter based on tab
+  const filteredMaterials =
+    active === "All" ? materials : materials.filter((m) => m.shared);
+
+  // Add the "Create new notes" card at the front
+  const items = [{ id: "create", type: "create" }, ...filteredMaterials];
+
+  // map iconType → actual icon component
+  const withIcons = items.map((it) =>
+    it.type === "create"
+      ? it
+      : {
+          ...it,
+          icon:
+            it.iconType === "paper" ? (
+              <PaperFold />
+            ) : it.iconType === "pencil" ? (
+              <Pencil />
+            ) : null,
+        }
+  );
+
+  const handleDelete = (id) => deleteMaterial(id);
+
+  // Debug: see what this page sees
+  console.log("Materials page sees materials:", materials);
 
   return (
     <div className="ss-wrap">
       <div className="ss-inner ss-with-sidebar-offset">
-        {/* no header; only pills like Figma */}
+        {/* Pills like Figma */}
         <div className="ss-tabs">
-          <button className={`ss-pill ${active === "All" ? "is-active" : ""}`} onClick={()=>setActive("All")}>All</button>
-          <button className={`ss-pill ${active === "Shared" ? "is-active" : ""}`} onClick={()=>setActive("Shared")}>Shared with Me</button>
+          <button
+            className={`ss-pill ${active === "All" ? "is-active" : ""}`}
+            onClick={() => setActive("All")}
+          >
+            All
+          </button>
+          <button
+            className={`ss-pill ${active === "Shared" ? "is-active" : ""}`}
+            onClick={() => setActive("Shared")}
+          >
+            Shared with Me
+          </button>
         </div>
 
+        {/* Hidden file input for upload */}
+        <input
+          type="file"
+          ref={fileInputRef}
+          style={{ display: "none" }}
+          onChange={handleFileChange}
+        />
+
         <div className="ss-grid">
-          {items.map((it) =>
+          {withIcons.map((it) =>
             it.type === "create" ? (
-              <CreateCard key={it.id} onClick={() => navigate("/materials/create")} />
+              <CreateCard key={it.id} onClick={handleCreateClick} />
             ) : (
               <MaterialCard
                 key={it.id}
@@ -149,6 +260,59 @@ export default function Materials() {
           )}
         </div>
       </div>
+
+      {/* Modal: name file + choose share option */}
+      {showModal && (
+        <div className="ss-modal-backdrop">
+          <div className="ss-modal">
+            <h2 className="ss-modal-title">Save your notes</h2>
+
+            <div className="ss-modal-form">
+              <label className="ss-modal-label">
+                File name
+                <input
+                  className="ss-modal-input"
+                  value={newTitle}
+                  onChange={(e) => setNewTitle(e.target.value)}
+                  placeholder="e.g. Calculus I – Chapter 3"
+                />
+              </label>
+
+              {pendingFile && (
+                <p className="ss-modal-file-hint">
+                  File: <strong>{pendingFile.name}</strong>
+                </p>
+              )}
+
+              <div className="ss-modal-actions">
+                <button
+                  type="button"
+                  className="ss-modal-btn ss-modal-cancel"
+                  onClick={handleModalClose}
+                >
+                  Cancel
+                </button>
+
+                <button
+                  type="button"
+                  className="ss-modal-btn ss-modal-save"
+                  onClick={(e) => handleSaveMaterial(e, false)}
+                >
+                  Save (just for me)
+                </button>
+
+                <button
+                  type="button"
+                  className="ss-modal-btn ss-modal-share"
+                  onClick={(e) => handleSaveMaterial(e, true)}
+                >
+                  Save & share with friends
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

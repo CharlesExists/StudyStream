@@ -17,6 +17,7 @@ import Dock from '../assets/fullDock.png';
 export default function Home() {
     const [username, setUsername] = useState("Guest"); 
     const [boat, setBoat] = useState(Boat);
+    localStorage.setItem("userBoat",Boat);
     const [coins, setCoins] = useState(0);
     const [streak, setStreak] = useState(0);
     return (
@@ -43,7 +44,11 @@ export default function Home() {
                 <Link to="/SoloStudyStart">
                 <button className="action-btn">Start Study Session</button>
                 </Link>
-                <button className="action-btn">Invite Friends</button>
+
+                <Link to="/invite">
+                    <button className="action-btn">Invite Friends</button>
+                </Link>
+
             </div>
             <div className="quick-start">
                 <h2 className="quick-start-title">Quick Start!</h2>
