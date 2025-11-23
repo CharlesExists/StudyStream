@@ -50,9 +50,9 @@ export default function Signup() {
         setError("");
         setLoading(true);
         try {// backend stuff
-        const result = await signInWithPopup(auth, googleProvider);
-        console.log("Google sign-in:", result.user);
-        alert(`Signed in as ${result.user.displayName}`);
+          const result = await signInWithPopup(auth, googleProvider);
+          console.log("Google sign-in:", result.user);
+          alert(`Signed in as ${result.user.displayName}`);
         } catch (e) {
         setError(e.message || "Google sign-in failed.");
         } finally {
