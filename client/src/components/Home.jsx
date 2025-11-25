@@ -44,7 +44,11 @@ export default function Home() {
                 <Link to="/SoloStudyStart">
                 <button className="action-btn">Start Study Session</button>
                 </Link>
-                <button className="action-btn">Invite Friends</button>
+
+                <Link to="/invite">
+                    <button className="action-btn">Invite Friends</button>
+                </Link>
+
             </div>
             <div className="quick-start">
                 <h2 className="quick-start-title">Quick Start!</h2>

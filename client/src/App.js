@@ -11,6 +11,7 @@ import CreateNotesScreen from "./components/CreateNotesScreen.jsx";
 import InviteFriendsStart from "./components/InviteFriendsStart.jsx";
 import SoloQuizSession from "./components/SoloQuizSession.jsx";
 import SoloFlashcardsSession from "./components/SoloFlashcardsSession.jsx";
+import GroupStudySession from "./components/GroupStudySession.jsx";
 
 export default function App() {
   return (
@@ -29,6 +30,8 @@ export default function App() {
         <Route path="/solostudystart" element={<SoloStudyStart />}></Route> 
         <Route path="/solostudystart/quiz" element={<SoloQuizSession />}></Route> 
         <Route path="/solostudystart/flashcards" element={<SoloFlashcardsSession />}></Route> 
+        <Route path="/GroupStudySession" element={<GroupStudySession />} />
+
       </Routes>
     </div>
   )  // render it directly
