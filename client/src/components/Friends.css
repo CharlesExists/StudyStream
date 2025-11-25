@@ -1,10 +1,366 @@
 .friends-page {
     padding: 20px;
-    background-color: aliceblue;
-    opacity: 0.7;
+    background-color: rgba(240, 248, 255, 0.734);
     min-height: 90vh;
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    border-radius: 12px;
 }
 
+.friends-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    width: 100%;
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.friend-card {
+    display: flex;
+    align-items: center;
+    background: #ffffff;
+    box-shadow: var(--shadow-elevated);
+    width: 100%;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.friends-header {
+    font-size: 48px;
+    margin-bottom: 20px;
+}
+
+.streak-icon, .coin-icon {
+    width: 20px;
+    height: 20px;
+    margin-left: 5px;
+}
+
+.friend-add {
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    padding: 16px 32px;
+    border-radius: 16px;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--primary);
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 140ms ease, box-shadow 140ms ease;
+    flex: 1;
+    opacity: 0.8;
+}
+
+.friend-add:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    opacity: 1;
+}
+
+.friends-loading {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--primary);
+    text-align: center;
+    color: #666;
+    font-size: 1.1rem;
+    padding: 2rem;
+}
+
+.friends-header {
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    color: #333;
+}
+
+
+
+.friend-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Friend Card - Left Section (Avatar) */
+.friend-left {
+    margin-right: 1.5rem;
+}
+
+.boat-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.boat-image {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+}
+
+/* Friend Card - Main Section (Name, Email, Level) */
+.friend-main {
+    flex: 1;
+}
+
+.friend-name {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #333;
+    margin: 0 0 0.5rem 0;
+}
+
+.friend-username {
+    font-size: 1rem;
+    color: #666;
+    margin: 0 0 0.5rem 0;
+}
+
+.friend-level {
+    font-size: 0.9rem;
+    color: #888;
+    margin: 0;
+}
+
+/* Friend Card - Right Section (Stats) */
+.friend-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.5rem;
+}
+
+.friend-stats {
+    display: flex;
+    gap: 1rem;
+}
+
+.stat-pill {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    background: #f5f5f5;
+}
+
+.stat-pill--streak {
+    background: #fff3e0;
+}
+
+.stat-pill--coins {
+    background: #fff9c4;
+}
+
+.stat-icon img {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+}
+
+.stat-value {
+    font-weight: 600;
+    color: #333;
+    font-size: 1rem;
+}
+
+.friend-since {
+    font-size: 0.85rem;
+    color: #999;
+    margin: 0.5rem 0 0 0;
+}
+
+.friend-add:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 203, 234, 0.4);
+}
+
+/* Modal Overlay */
+.add-friend-page {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+/* Modal Content Box */
+.modal-content {
+    background: white;
+    padding: 2rem;
+    border-radius: 16px;
+    max-width: 500px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.modal-content h1 {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+}
+
+/* Close Button */
+.close-button {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    color: #666;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s, color 0.2s;
+}
+
+.close-button:hover {
+    background: #f0f0f0;
+    color: #333;
+}
+
+/* Search Container */
+.search-container {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.search-container input {
+    flex: 1;
+    padding: 0.75rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.2s;
+}
+
+.search-container input:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+.search-container button {
+    padding: 0.75rem 1.5rem;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.search-container button:hover {
+    background: var(--button-hover);
+}
+
+/* Message text styling */
+.message {
+    padding: 0.75rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    background: #e3f2fd;
+    color: #1976d2;
+    text-align: center;
+}
+
+.search-results {
+    margin-top: 1.5rem;
+}
+
+.search-results h2 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.user-result-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    margin-bottom: 0.75rem;
+    transition: border-color 0.2s;
+}
+
+.user-result-card:hover {
+    border-color: #667eea;
+}
+
+.user-result-card h3 {
+    margin: 0 0 0.25rem 0;
+    color: #333;
+    font-size: 1.1rem;
+}
+
+.user-result-card p {
+    margin: 0;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.user-result-card button {
+    padding: 0.5rem 1rem;
+    background: #28a745;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.user-result-card button:hover {
+    background: #218838;
+}
+
+@media (max-width: 768px) {
+    .friend-card {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .friend-left {
+        margin-right: 0;
+        margin-bottom: 1rem;
+    }
+
+    .friend-right {
+        align-items: center;
+    }
+
+    .friend-stats {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+}
