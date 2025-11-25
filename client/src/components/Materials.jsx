@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./Materials.css";
 import { useMaterials } from "../components/MaterialsContext";
+import { auth } from "../firebase";
+
 
 /* --- tiny inline SVGs --- */
 const PlusOutline = () => (
@@ -165,30 +167,74 @@ export default function Materials() {
     setNewTitle("");
   };
 
-  // share = true ➜ "Save & share with friends"
-  // share = false ➜ "Save (just for me)"
-  const handleSaveMaterial = (e, share) => {
-    e.preventDefault();
-    if (!newTitle.trim()) return;
+  // backend connection
 
-    const now = new Date();
+
+  const handleSaveMaterial = async (e, share) => {
+  e.preventDefault();
+  if (!newTitle.trim() || !pendingFile) return;
+
+  try {
+    const user = auth.currentUser;
+    if (!user) {
+      alert("You must be logged in to upload.");
+      return;
+    }
+
+    const idToken = await user.getIdToken();
+
+    const formData = new FormData();
+    formData.append("file", pendingFile);          //  matches upload.single("file")
+    formData.append("title", newTitle.trim());     // for title
+    formData.append("isShared", share ? "true" : "false"); // saved to groups or not
+
+    const res = await fetch("http://localhost:5000/materials/upload", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${idToken}`,
+      },
+      body: formData,
+      mode: "cors",   
+    });
+    
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      console.error("Upload failed:", data);
+      alert(data.error || "Upload failed.");
+      return;
+    }
+
+    // data.material is what your backend sends back
+    const material = data.material;
+
+    // Format date for display (using createdAt from backend if you want)
+    const now = new Date(material.createdAt || Date.now());
     const dateStr = now.toLocaleDateString("en-US", {
       month: "short",
       day: "numeric",
       year: "numeric",
     });
 
+    // Push into frontend state via context
     addMaterial({
-      id: crypto.randomUUID(),
-      title: newTitle.trim(),
+      id: data.id, // Firestore doc id from backend
+      title: material.title,
       date: dateStr,
-      sub: share ? "Shared by Sarah" : "",
-      shared: share,
+      sub: material.isShared ? "Shared" : "",
+      shared: material.isShared,
       iconType: "paper",
+      // you could also keep fileUrl, sizeKB, etc in context if needed
     });
 
     handleModalClose();
-  };
+  } catch (err) {
+    console.error("Upload error:", err);
+    alert(err.message || "Something went wrong during upload.");
+  }
+};
+
 
   // Filter based on tab
   const filteredMaterials =

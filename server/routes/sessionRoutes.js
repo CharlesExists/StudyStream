@@ -8,7 +8,7 @@ const XP_PER_MINUTE = 2; // you gain 2 xp points for every minute you are in a s
 
 function xpRequiredForLevel(level) {
     const segment = Math.floor(level / 10);  // Math: account levels update upon session ending. Account levels increase in "difficulty" every 10 levels.
-    return 60 * (segment + 1);               // for levels 1-10, you need 60 experience points (or 30 minutes) to level up. 
+    return 60 * (segment + 1);               // for levels 1-10, you need 60 experience points (or ok  minutes) to level up. 
                                             // the amount of time will double every next level segment. so levels 11-20 will require 120 xp (one hour) per level,
                                             // so and so forth. 
   }
