@@ -32,11 +32,13 @@ export default function SoloStudyStart() {
         notes: selectedMaterial?.title
         });
 
-    if (selectedMode==="quiz"){
-        navigate("/solostudystart/quiz");
-    } else if (selectedMode==="flashcards"){
-        navigate("/solostudystart/flashcards");
-        }
+        navigate(
+            selectedMode === "quiz" ? "/solostudystart/quiz" : "/solostudystart/flashcards", {
+                state: {
+                    materialId: selectedMaterialId, timerMinutes: Number(selectedTimer), mode: selectedMode
+                }
+            }
+        );
     };
 
     return (

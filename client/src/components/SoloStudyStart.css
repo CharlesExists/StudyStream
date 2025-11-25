@@ -9,7 +9,7 @@
 
 .logo-wrapper {
     position: relative; display: flex;
-    top: -5px; left: -25px;
+    top: -5px; 
     align-items: center;
     gap: 10px;          
 }
@@ -17,24 +17,25 @@
 .solo-content-wrapper {
     position: relative; z-index: 1;
     display: flex; flex-direction: column; 
+    width: 1050px; margin: 50px 0 0 325px;
 }
 
  .water-solo {
-    width: 1520px; height: 245px;
-    flex-shrink: 0;
-    background: linear-gradient(180deg, #1AABE5 21.15%, #2466DB 100%);
-    position: absolute; top: 410px; left: 50%; transform: translateX(-50%);
-    z-index: 0;
+  width: 200%; max-width: none;
+  height: 16vw; max-height: 245px;
+  background: linear-gradient(180deg, #1AABE5 21.15%, #2466D8 100%);
+  position: absolute; z-index: 0;
+  top: 73vh; left: 50px; transform: translateX(-50%);
 }
 
 .boat-avatar-solo{
-    position: absolute; transform: translateX(-50%);
-    bottom: 40px; left: 50%;
+    position: absolute; transform: translateX(-50%) scale(.6);
+    bottom: 85px; left: 12.5%;
 }
 
 .home-button {
     display: inline-flex; margin-top: 20px;
-    position: relative; left: -28px;
+    position: relative; 
     align-items: center; gap: 10px;                   
     background-color: #E6E6E6; color: #454545;
     border: 5px solid #E6E6E6; border-radius: 20px;         
@@ -128,16 +129,16 @@
 }
 
 .quiz-button {
-  background: #6337b0;
-  color: white;
+  background: #D3BFF6;
+  color: #5B33A2;
 }
 
 .quiz-button:hover {
-  background: #532d91;
+  background: #C8AEF6;
 }
 
 .quiz-button.active {
-  background: #5B33A2;
+  background: #B399E0;
   box-shadow: 0 6px 16px rgba(123, 95, 181, 0.4);
   transform: translateY(-2px);
 }
