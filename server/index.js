@@ -5,11 +5,14 @@ import { verifyToken } from "./middleware/authMiddleware.js";
 import authRoutes from "./routes/authRoutes.js";
 import sessionRoutes from "./routes/sessionRoutes.js";
 import materialRoutes from "./routes/materialRoutes.js";
+import calendarRoutes from "./routes/calendarRoutes.js";
 
 
 const app = express();
+ 
+// needs review: start
+/* --- FIX ADDED: configure CORS explicitly for frontend on 3000 --- */ 
 
-/* --- FIX ADDED: configure CORS explicitly for frontend on 3000 --- */
 app.use(cors({
     origin: "http://localhost:3000",
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
@@ -17,9 +20,10 @@ app.use(cors({
     credentials: true,
   })
 );
+console.log("CORS MIDDLEWARE RAN");
 app.options("*", cors()); 
 
-
+// nneeds review: end
 
 
 //middleware call (?)
@@ -30,6 +34,8 @@ app.use("/", authRoutes);
 app.use("/", sessionRoutes);
 
 app.use("/", materialRoutes);
+
+app.use("/", calendarRoutes); 
 
 
 app.get("/protected", verifyToken, (req, res) => {

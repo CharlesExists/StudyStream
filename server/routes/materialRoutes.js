@@ -4,12 +4,10 @@ import { db, bucket } from "../firebase.js";
 import { verifyToken } from "../middleware/authMiddleware.js";
 import cors from "cors";
 
+// note from charles: HELPPPP
 const router = express.Router();
 
-/* --------------------------------------------------------
-   FIX: Allow preflight OPTIONS request for file upload
-   This MUST come BEFORE verifyToken blocks OPTIONS calls
---------------------------------------------------------- */
+
 router.options("/materials/upload", (req, res) => {
     res.set("Access-Control-Allow-Origin", "http://localhost:3000");
     res.set("Access-Control-Allow-Headers", "Authorization, Content-Type");

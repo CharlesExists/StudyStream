@@ -134,6 +134,36 @@ router.post("/session/end", verifyToken, async (req, res) => {
         newXP -= xpRequiredForLevel(newLevel);
         newLevel++;
       }
+
+      //Streak timing
+      const today = new Date();
+      today.setHours(0,0,0,0);
+
+      let streak = user.streak ?? 0;
+      let lastSessionDate = user.lastSessionDate
+        ? user.lastSessionDate.toDate()
+        : null;
+
+      if (!lastSessionDate) {
+        // Users first time / first streak
+        streak = 1;
+      } else {
+        const last = new Date(lastSessionDate);
+        last.setHours(0,0,0,0);
+
+        const oneDay = 24 * 60 * 60 * 1000;
+        const diffDays = Math.floor((today - last) / oneDay);
+
+        if (diffDays === 0) {
+          // same day → streak unchanged
+        } else if (diffDays === 1) {
+          // next day → streak increases
+          streak += 1;
+        } else {
+          // miss more than 1 day → reset
+          streak = 1;
+        }
+      }
   
 
        
@@ -164,6 +194,103 @@ router.post("/session/end", verifyToken, async (req, res) => {
       res.status(500).json({ error: err.message });
     }
   });
+
+  // Quickstart
+  
+router.post("/session/quickstart", verifyToken, async (req, res) => {
+  try {
+    const uid = req.user.uid;
+
+    // Get latest session
+    const sessionsRef = db
+
+      .collection("users")
+      .doc(uid)
+      .collection("sessions")
+      .orderBy("startTime", "desc")
+      .limit(1);
+
+    const snapshot = await sessionsRef.get();
+
+    if (snapshot.empty) {
+
+      return res.status(400).json({
+        error: "No previous sessions found. Start a session normally first."
+      });
+    }
+
+    const lastSession = snapshot.docs[0].data();
+    const settings = lastSession.settingsSnapshot;
+
+    if (!settings) {
+      return res.status(400).json({
+        error: "No saved settings found for quickstart."
+      });
+    }
+
+    // Build new session using saved info
+    const newSession = {
+      sessionType: lastSession.sessionType,
+      topic: settings.topic,
+      method: settings.method,
+      durationPlanned: settings.timer,
+      durationCompleted: 0,
+      startTime: new Date(),
+      endTime: null,
+      groupId: lastSession.groupId ?? null,
+      settingsSnapshot: settings
+    };
+// update firestore
+    const docRef = await db
+
+      .collection("users")
+      .doc(uid)
+      .collection("sessions")
+      .add(newSession);
+
+    res.status(201).json({
+      message: "Quickstart session created",
+      sessionId: docRef.id,
+      session: newSession
+    });
+
+  } catch (err) {
+    console.error("Error in quickstart:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Session History
+
+router.get("/session/history", verifyToken, async (req, res) => {
+  try {
+    const uid = req.user.uid;
+
+    const sessionsSnap = await db
+      .collection("users")
+      .doc(uid)
+      .collection("sessions")
+      .orderBy("startTime", "desc")
+      .limit(15)
+      .get();
+
+    const sessions = sessionsSnap.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+
+    res.status(200).json({
+      message: "Recent sessions fetched",
+      count: sessions.length,
+      sessions
+    });
+
+  } catch (err) {
+    console.error("Error fetching history:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
   
   
   export default router;

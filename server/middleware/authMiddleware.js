@@ -2,6 +2,7 @@ import { auth } from "../firebase.js";
 
 export const verifyToken = async (req, res, next) => {
 
+  // NEEDS REVIEW
   // Allow preflight requests through
   if (req.method === "OPTIONS") {
     return next();

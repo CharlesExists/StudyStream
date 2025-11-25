@@ -5,6 +5,7 @@ import "./SoloStudyStart.css";
 import blueLogo from "../assets/blueStudyStreamLogo.png";
 import homeIcon from '../assets/home.png';
 import Boat from '../assets/boat.png';
+import { auth } from "../firebase;";
 
 const fakeMaterials = [
     { id: "1", title: "Calculus I" },
@@ -25,19 +26,72 @@ export default function SoloStudyStart() {
         materials.find((m) => m.id === selectedMaterialId) || null;
 
     const navigate = useNavigate()
-    const handleStart = () => {
-        console.log("Starting solo study session:", {
-        mode: selectedMode,
-        timer: selectedTimer,
-        notes: selectedMaterial?.title
-        });
-
-    if (selectedMode==="quiz"){
-        navigate("/solostudystart/quiz");
-    } else if (selectedMode==="flashcards"){
-        navigate("/solostudystart/flashcards");
+    const handleStart = async () => {
+        try {
+          // 1. Ensure user is logged in
+          const user = auth.currentUser;
+          if (!user) {
+            alert("You must be logged in to start a session.");
+            return;
+          }
+      
+          // 2. Get Firebase ID token
+          const token = await user.getIdToken();
+      
+          // 3. Prepare backend request body
+          const body = {
+            sessionType: "solo",
+            topic: selectedMaterial?.title || "Unknown",
+            method: selectedMode,              // "quiz" or "flashcards"
+            duration: Number(selectedTimer)    // minutes
+          };
+      
+          // 4. Send request to backend
+          const res = await fetch("http://localhost:3000/session/start", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`
+            },
+            body: JSON.stringify(body)
+          });
+      
+          const data = await res.json();
+          console.log("Backend session start:", data);
+      
+          if (!res.ok) {
+            alert(data.error || "Failed to start session.");
+            return;
+          }
+      
+          const { sessionId } = data;
+      
+          // 5. Navigate to the correct screen and pass session info in state
+          if (selectedMode === "quiz") {
+            navigate("/solostudystart/quiz", {
+              state: {
+                sessionId,
+                token,
+                topic: body.topic,
+                duration: body.duration
+              }
+            });
+          } else if (selectedMode === "flashcards") {
+            navigate("/solostudystart/flashcards", {
+              state: {
+                sessionId,
+                token,
+                topic: body.topic,
+                duration: body.duration
+              }
+            });
+          }
+      
+        } catch (err) {
+          console.error("Error starting session:", err);
+          alert("Error starting session.");
         }
-    };
+      };
 
     return (
         <div className="solo-start">

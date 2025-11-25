@@ -282,7 +282,7 @@ export default function Materials() {
           </button>
         </div>
 
-        {/* Hidden file input for upload */}
+        {/*/Hidden file input for upload */}
         <input
           type="file"
           ref={fileInputRef}
