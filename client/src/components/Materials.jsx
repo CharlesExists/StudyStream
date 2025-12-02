@@ -1,37 +1,40 @@
-import React, { useEffect, useRef, useState } from "react";
+// src/pages/Materials.jsx
+import React, { useRef, useState } from "react";
 import "./Materials.css";
 import { useMaterials } from "../components/MaterialsContext";
-import { auth } from "../firebase";
+import  DocumentViewer  from "../components/DocumentViewer";
 
-
-/* --- tiny inline SVGs --- */
+/* === ICONS === */
 const PlusOutline = () => (
-  <svg className="ss-plus" width="46" height="46" viewBox="0 0 46 46" aria-hidden="true">
+  <svg className="ss-plus" width="46" height="46" viewBox="0 0 46 46">
     <circle cx="23" cy="23" r="20" />
     <path d="M23 14 v18 M14 23 h18" />
   </svg>
 );
+
 const PaperFold = () => (
-  <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true" className="ss-paper">
+  <svg width="18" height="18" viewBox="0 0 18 18" className="ss-paper">
     <rect x="1" y="1" width="16" height="16" rx="3" />
     <path d="M11 1 v6 h6" className="fold" />
   </svg>
 );
+
 const Pencil = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" className="ss-pencil">
+  <svg width="18" height="18" viewBox="0 0 24 24" className="ss-pencil">
     <path className="body" d="M3 17.25V21h3.75L19.81 7.94l-3.75-3.75L3 17.25z" />
     <path className="tip" d="M14.06 4.19l3.75 3.75" />
   </svg>
 );
+
 const KebabIco = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" className="ss-kebab-ico">
+  <svg width="18" height="18" viewBox="0 0 24 24" className="ss-kebab-ico">
     <circle cx="12" cy="5" r="1.7" />
     <circle cx="12" cy="12" r="1.7" />
     <circle cx="12" cy="19" r="1.7" />
   </svg>
 );
 
-/* building blocks */
+/* --- UI CARD WRAPPER --- */
 function CardShell({ children, className = "", ...props }) {
   return (
     <div className={`ss-card ${className}`} {...props}>
@@ -45,17 +48,8 @@ function CreateCard({ onClick }) {
     <CardShell
       className="ss-card-create"
       role="button"
+      onClick={onClick}
       tabIndex={0}
-      onClick={(e) => {
-        e.preventDefault();
-        onClick?.();
-      }}
-      onKeyDown={(e) => {
-        if (e.key === "Enter") {
-          e.preventDefault();
-          onClick?.();
-        }
-      }}
     >
       <div className="ss-create-icon">
         <PlusOutline />
@@ -65,55 +59,31 @@ function CreateCard({ onClick }) {
   );
 }
 
-function MaterialCard({ item, isMenuOpen, onOpenMenu, onDelete }) {
-  const menuRef = useRef(null);
-
-  useEffect(() => {
-    function onDocClick(e) {
-      if (!isMenuOpen) return;
-      if (menuRef.current && !menuRef.current.contains(e.target)) {
-        onOpenMenu(null);
-      }
-    }
-    function onEsc(e) {
-      if (e.key === "Escape") onOpenMenu(null);
-    }
-    document.addEventListener("mousedown", onDocClick);
-    document.addEventListener("keydown", onEsc);
-    return () => {
-      document.removeEventListener("mousedown", onDocClick);
-      document.removeEventListener("keydown", onEsc);
-    };
-  }, [isMenuOpen, onOpenMenu]);
-
+function MaterialCard({ item, isMenuOpen, onOpenMenu, onDelete, onOpen }) {
   return (
-    <CardShell>
+    <CardShell role="button" onClick={() => onOpen(item)}>
       <div className="ss-card-top">
         <div className="ss-card-title">
-          <span className="ss-card-icon">{item.icon}</span>
+          {item.icon}
           <span className="ss-card-name">{item.title}</span>
         </div>
 
-        <div className="ss-menu-wrap" ref={menuRef}>
+        <div className="ss-menu-wrap" onClick={(e) => e.stopPropagation()}>
           <button
             className="ss-kebab"
             aria-haspopup="menu"
             aria-expanded={isMenuOpen ? "true" : "false"}
-            aria-label={`More actions for ${item.title}`}
             onClick={() => onOpenMenu(isMenuOpen ? null : item.id)}
           >
             <KebabIco />
           </button>
 
           {isMenuOpen && (
-            <div role="menu" className="ss-menu">
+            <div className="ss-menu" role="menu">
               <button
                 role="menuitem"
                 className="ss-menu-item ss-danger"
-                onClick={() => {
-                  onDelete(item.id);
-                  onOpenMenu(null);
-                }}
+                onClick={() => onDelete(item.id)}
               >
                 Delete
               </button>
@@ -131,33 +101,30 @@ function MaterialCard({ item, isMenuOpen, onOpenMenu, onDelete }) {
   );
 }
 
-/* === Materials page === */
 export default function Materials() {
-  const { materials, addMaterial, deleteMaterial } = useMaterials(); // 👈 shared list
+  const { materials, addMaterial, deleteMaterial } = useMaterials();
+
   const [active, setActive] = useState("All");
   const [openMenuId, setOpenMenuId] = useState(null);
 
-  // upload + modal state
   const fileInputRef = useRef(null);
   const [showModal, setShowModal] = useState(false);
   const [pendingFile, setPendingFile] = useState(null);
   const [newTitle, setNewTitle] = useState("");
 
-  // open OS file picker when "Create new notes" clicked
-  const handleCreateClick = () => {
-    fileInputRef.current?.click();
-  };
+  const [viewerFile, setViewerFile] = useState(null);
 
+  /* === Create button === */
+  const handleCreateClick = () => fileInputRef.current?.click();
+
+  /* === Select file === */
   const handleFileChange = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
     setPendingFile(file);
-    const baseName = file.name.replace(/\.[^/.]+$/, "");
-    setNewTitle(baseName);
+    setNewTitle(file.name.replace(/\.[^/.]+$/, ""));
     setShowModal(true);
-
-    // allow re-selecting same file later
     e.target.value = "";
   };
 
@@ -167,106 +134,43 @@ export default function Materials() {
     setNewTitle("");
   };
 
-  // backend connection
+  /* === Save material (calls backend through context) === */
+  const handleSaveMaterial = async (share) => {
+    if (!pendingFile || !newTitle.trim()) return;
 
-
-  const handleSaveMaterial = async (e, share) => {
-  e.preventDefault();
-  if (!newTitle.trim() || !pendingFile) return;
-
-  try {
-    const user = auth.currentUser;
-    if (!user) {
-      alert("You must be logged in to upload.");
-      return;
-    }
-
-    const idToken = await user.getIdToken();
-
-    const formData = new FormData();
-    formData.append("file", pendingFile);          //  matches upload.single("file")
-    formData.append("title", newTitle.trim());     // for title
-    formData.append("isShared", share ? "true" : "false"); // saved to groups or not
-
-    const res = await fetch("http://localhost:5000/materials/upload", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${idToken}`,
-      },
-      body: formData,
-      mode: "cors",   
-    });
-    
-
-    const data = await res.json();
-
-    if (!res.ok) {
-      console.error("Upload failed:", data);
-      alert(data.error || "Upload failed.");
-      return;
-    }
-
-    // data.material is what your backend sends back
-    const material = data.material;
-
-    // Format date for display (using createdAt from backend if you want)
-    const now = new Date(material.createdAt || Date.now());
-    const dateStr = now.toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    });
-
-    // Push into frontend state via context
-    addMaterial({
-      id: data.id, // Firestore doc id from backend
-      title: material.title,
-      date: dateStr,
-      sub: material.isShared ? "Shared" : "",
-      shared: material.isShared,
-      iconType: "paper",
-      // you could also keep fileUrl, sizeKB, etc in context if needed
+    await addMaterial({
+      file: pendingFile,
+      title: newTitle.trim(),
+      shared: share,
     });
 
     handleModalClose();
-  } catch (err) {
-    console.error("Upload error:", err);
-    alert(err.message || "Something went wrong during upload.");
-  }
-};
+  };
 
+  /* === Filtering === */
+  const filtered =
+    active === "All"
+      ? materials
+      : materials.filter((m) => m.shared === true);
 
-  // Filter based on tab
-  const filteredMaterials =
-    active === "All" ? materials : materials.filter((m) => m.shared);
-
-  // Add the "Create new notes" card at the front
-  const items = [{ id: "create", type: "create" }, ...filteredMaterials];
-
-  // map iconType → actual icon component
-  const withIcons = items.map((it) =>
-    it.type === "create"
-      ? it
-      : {
-          ...it,
-          icon:
-            it.iconType === "paper" ? (
-              <PaperFold />
-            ) : it.iconType === "pencil" ? (
-              <Pencil />
-            ) : null,
-        }
-  );
-
-  const handleDelete = (id) => deleteMaterial(id);
-
-  // Debug: see what this page sees
-  console.log("Materials page sees materials:", materials);
+  /* === Build items array === */
+  const items = [
+    { id: "create", type: "create" },
+    ...filtered.map((m) => ({
+      ...m,
+      icon:
+        m.iconType === "paper" ? (
+          <PaperFold />
+        ) : m.iconType === "pencil" ? (
+          <Pencil />
+        ) : null,
+    })),
+  ];
 
   return (
     <div className="ss-wrap">
       <div className="ss-inner ss-with-sidebar-offset">
-        {/* Pills like Figma */}
+        {/* Tabs */}
         <div className="ss-tabs">
           <button
             className={`ss-pill ${active === "All" ? "is-active" : ""}`}
@@ -278,11 +182,11 @@ export default function Materials() {
             className={`ss-pill ${active === "Shared" ? "is-active" : ""}`}
             onClick={() => setActive("Shared")}
           >
-            Shared with Me
+            Shared
           </button>
         </div>
 
-        {/*/Hidden file input for upload */}
+        {/* Hidden file input */}
         <input
           type="file"
           ref={fileInputRef}
@@ -290,8 +194,9 @@ export default function Materials() {
           onChange={handleFileChange}
         />
 
+        {/* Grid */}
         <div className="ss-grid">
-          {withIcons.map((it) =>
+          {items.map((it) =>
             it.type === "create" ? (
               <CreateCard key={it.id} onClick={handleCreateClick} />
             ) : (
@@ -300,64 +205,62 @@ export default function Materials() {
                 item={it}
                 isMenuOpen={openMenuId === it.id}
                 onOpenMenu={setOpenMenuId}
-                onDelete={handleDelete}
+                onDelete={deleteMaterial}
+                onOpen={(item) => setViewerFile(item.fileUrl)}
               />
             )
           )}
         </div>
       </div>
 
-      {/* Modal: name file + choose share option */}
+      {/* Modal */}
       {showModal && (
         <div className="ss-modal-backdrop">
           <div className="ss-modal">
             <h2 className="ss-modal-title">Save your notes</h2>
 
-            <div className="ss-modal-form">
-              <label className="ss-modal-label">
-                File name
-                <input
-                  className="ss-modal-input"
-                  value={newTitle}
-                  onChange={(e) => setNewTitle(e.target.value)}
-                  placeholder="e.g. Calculus I – Chapter 3"
-                />
-              </label>
+            <label className="ss-modal-label">
+              File name
+              <input
+                className="ss-modal-input"
+                value={newTitle}
+                onChange={(e) => setNewTitle(e.target.value)}
+              />
+            </label>
 
-              {pendingFile && (
-                <p className="ss-modal-file-hint">
-                  File: <strong>{pendingFile.name}</strong>
-                </p>
-              )}
+            <p className="ss-modal-file-hint">
+              File: <strong>{pendingFile?.name}</strong>
+            </p>
 
-              <div className="ss-modal-actions">
-                <button
-                  type="button"
-                  className="ss-modal-btn ss-modal-cancel"
-                  onClick={handleModalClose}
-                >
-                  Cancel
-                </button>
+            <div className="ss-modal-actions">
+              <button
+                className="ss-modal-btn ss-modal-cancel"
+                onClick={handleModalClose}
+              >
+                Cancel
+              </button>
 
-                <button
-                  type="button"
-                  className="ss-modal-btn ss-modal-save"
-                  onClick={(e) => handleSaveMaterial(e, false)}
-                >
-                  Save (just for me)
-                </button>
+              <button
+                className="ss-modal-btn ss-modal-save"
+                onClick={() => handleSaveMaterial(false)}
+              >
+                Save (just for me)
+              </button>
 
-                <button
-                  type="button"
-                  className="ss-modal-btn ss-modal-share"
-                  onClick={(e) => handleSaveMaterial(e, true)}
-                >
-                  Save & share with friends
-                </button>
-              </div>
+              <button
+                className="ss-modal-btn ss-modal-share"
+                onClick={() => handleSaveMaterial(true)}
+              >
+                Save & share
+              </button>
             </div>
           </div>
         </div>
+      )}
+
+      {/* Document Viewer */}
+      {viewerFile && (
+        <DocumentViewer fileUrl={viewerFile} onClose={() => setViewerFile(null)} />
       )}
     </div>
   );

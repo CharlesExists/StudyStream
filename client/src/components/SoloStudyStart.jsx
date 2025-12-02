@@ -5,7 +5,7 @@ import "./SoloStudyStart.css";
 import blueLogo from "../assets/blueStudyStreamLogo.png";
 import homeIcon from '../assets/home.png';
 import Boat from '../assets/boat.png';
-import { auth } from "../firebase;";
+import { auth } from "../firebase";
 
 const fakeMaterials = [
     { id: "1", title: "Calculus I" },

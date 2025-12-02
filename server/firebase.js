@@ -9,7 +9,7 @@ const serviceAccount = JSON.parse(
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  storageBucket: "studystreamnyu.appspot.com"
+  storageBucket: "studystreamnyu.firebasestorage.app"
   
 });
 
@@ -18,6 +18,7 @@ console.log("Firebase Admin initialized for project:", serviceAccount.project_id
 export const auth = admin.auth();
 export const db = admin.firestore();
 export const bucket = admin.storage().bucket();
+
 
 
 const testConnection = async () => { // code that will show that the firebase

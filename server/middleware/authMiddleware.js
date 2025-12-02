@@ -1,13 +1,7 @@
+// middleware/authMiddleware.js
 import { auth } from "../firebase.js";
 
 export const verifyToken = async (req, res, next) => {
-
-  // NEEDS REVIEW
-  // Allow preflight requests through
-  if (req.method === "OPTIONS") {
-    return next();
-  }
-
   const header = req.headers.authorization;
 
   if (!header || !header.startsWith("Bearer ")) {
@@ -18,7 +12,7 @@ export const verifyToken = async (req, res, next) => {
 
   try {
     const decoded = await auth.verifyIdToken(token);
-    req.user = decoded;
+    req.user = decoded;       // stores the Firebase user data for downstream routes
     next();
   } catch (error) {
     console.error("Token verification failed:", error);
