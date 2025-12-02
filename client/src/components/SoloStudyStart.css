@@ -11,13 +11,14 @@
     position: relative; display: flex;
     top: -5px; 
     align-items: center;
-    gap: 10px;          
+    gap: 10px;  
+    margin-left: 20px;        
 }
 
 .solo-content-wrapper {
     position: relative; z-index: 1;
     display: flex; flex-direction: column; 
-    width: 1050px; margin: 50px 0 0 325px;
+    width: 1050px; margin: 50px 0 0 335px;
 }
 
  .water-solo {
@@ -25,7 +26,7 @@
   height: 16vw; max-height: 245px;
   background: linear-gradient(180deg, #1AABE5 21.15%, #2466D8 100%);
   position: absolute; z-index: 0;
-  top: 73vh; left: 50px; transform: translateX(-50%);
+  top: 73vh; left: 50px; transform: translateX(-50%); z-index: 0;
 }
 
 .boat-avatar-solo{
@@ -34,7 +35,7 @@
 }
 
 .home-button {
-    display: inline-flex; margin-top: 20px;
+    display: inline-flex; margin-top: 20px; margin-left: 20px;
     position: relative; 
     align-items: center; gap: 10px;                   
     background-color: #E6E6E6; color: #454545;
@@ -76,7 +77,6 @@
   min-width: 120px;
 }
 
-/* Notes Selection */
 .notes-selection {
   flex: 1;
   display: flex;
@@ -108,7 +108,6 @@
   color: #2466DB;
 }
 
-/* Type Buttons */
 .type-buttons {
   display: flex;
   gap: 20px;
@@ -158,7 +157,6 @@
   transform: translateY(-2px);
 }
 
-/* Timer Row */
 .timer-row {
   align-items: stretch;
 }
@@ -200,7 +198,6 @@
   transform: translateY(-2px);
 }
 
-/* Start Button */
 .start-button {
   padding: 18px 48px;
   border: none;
@@ -226,7 +223,6 @@
   transform: translateY(0);
 }
 
-/* Blue pill container */
 .notes-selection {
   display: flex;
   align-items: center;
@@ -240,7 +236,6 @@
   position: relative;
 }
 
-/* Icon on the left inside pill */
 .notes-icon {
   width: 28px;
   height: 28px;
@@ -253,7 +248,6 @@
   font-size: 16px;
 }
 
-/* Text inside pill */
 .notes-text {
   font-size: 18px;
   font-weight: 500;
@@ -263,7 +257,6 @@
   text-overflow: ellipsis;
 }
 
-/* Arrow */
 .dropdown-arrow {
   margin-left: auto;
   font-size: 16px;
@@ -288,22 +281,18 @@
   transition: transform 0.25s ease;
 }
 
-/* rotate arrow when open */
 .notes-circle.open {
   transform: rotate(180deg);
 }
 
-/* ============================
-   DROPDOWN MENU
-   ============================ */
-/* The wrapper around the pill + menu */
+
 .notes-wrapper {
-  position: relative;      /* so the menu is positioned under this */
+  position: relative;    
 }
 
 .notes-dropdown-menu {
   position: absolute;
-  top: 110%;                  /* sits right below the pill */
+  top: 110%;              
   left: 0;
   background: white;
   width: 100%;
@@ -315,7 +304,6 @@
   animation: dropdownFade 0.18s ease-out;
 }
 
-/* Each dropdown item */
 .notes-dropdown-item {
   padding: 10px 16px;
   font-size: 16px;
@@ -327,7 +315,6 @@
   background-color: #E7F2FF;
 }
 
-/* Simple fade animation */
 @keyframes dropdownFade {
   from {
     opacity: 0;
@@ -340,7 +327,6 @@
 }
 
 
-/* Responsive */
 @media (max-width: 768px) {
   .content-wrapper {
     max-width: 100%;

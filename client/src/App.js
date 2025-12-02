@@ -25,9 +25,9 @@ export default function App() {
           <Route path="/" element={<Navigate to="/Materials" replace />} />
           <Route path="/Materials" element={<Materials />}></Route>
           <Route path="/materials/create" element={<CreateNotesScreen />} />
-          <Route path="/invite" element={<InviteFriendsStart />} />
         </Route>
         <Route path="/solostudystart" element={<SoloStudyStart />}></Route> 
+        <Route path="/invite" element={<InviteFriendsStart />} />
         <Route path="/solostudystart/quiz" element={<SoloQuizSession />}></Route> 
         <Route path="/solostudystart/flashcards" element={<SoloFlashcardsSession />}></Route> 
         <Route path="/GroupStudySession" element={<GroupStudySession />} />

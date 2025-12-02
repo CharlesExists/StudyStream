@@ -2,7 +2,6 @@ import React, {useState} from "react";
 import { Link, NavLink } from "react-router-dom";
 import "./Home.css";
 import Streak from '../assets/streak.png'; 
-import Coin from '../assets/coin.png';
 import blueLogo from '../assets/blueStudyStreamLogo.png';
 import homeIcon from '../assets/home.png';
 import materialsIcon from '../assets/materials.png';
@@ -24,10 +23,6 @@ export default function Home() {
         <>
         <div className="welcome-section">
             <h1 className="welcome-text">Welcome, {username}!</h1>
-            <div className="coin-counter">
-                <img src={Coin} alt="Coins" className="coin-image" />
-                <span className="coin-amount">{coins}</span>
-            </div>
             <div className="streak-counter">
                 <img src={Streak} alt="Streaks" className="streak-image" />
                 <span className="streak-amount">{streak}</span>
@@ -42,18 +37,20 @@ export default function Home() {
         <div className="action-wrapper">
             <div className="actions-section">
                 <Link to="/SoloStudyStart">
-                <button className="action-btn">Start Study Session</button>
+                    <button className="action-btn">Start Study Session</button>
                 </Link>
-
                 <Link to="/invite">
                     <button className="action-btn">Invite Friends</button>
                 </Link>
+            </div>
+            
+            <Link to="/QuickStartPlaceholder" className="quick-start-link">
+  <div className="quick-start">
+      <h2 className="quick-start-title">Quick Start!</h2>
+      <h2 className="quick-start-content">Calculus | Flashcards | 1 Hour</h2>
+  </div>
+</Link>
 
-            </div>
-            <div className="quick-start">
-                <h2 className="quick-start-title">Quick Start!</h2>
-                <h2 className="quick-start-content">Calculus | Flashcards | 1 Hour</h2> {}
-            </div>
         </div>
         </>
     );

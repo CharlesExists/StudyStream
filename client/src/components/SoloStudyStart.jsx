@@ -75,7 +75,7 @@ export default function SoloStudyStart() {
                     onClick={() => setIsNotesOpen((prev) => !prev)}
                 >
                 <span className={`notes-circle ${isNotesOpen ? "open" : ""}`}>
-                    ⌄
+                    ↓
                     </span>
 
                 <span className="notes-text">

@@ -1,11 +1,16 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import "./InviteFriendsStart.css";
 import { useMaterials } from "../components/MaterialsContext";
 import { useNavigate } from "react-router-dom";
+import "./SoloStudyStart.css";
+import blueLogo from "../assets/blueStudyStreamLogo.png";
+import homeIcon from "../assets/home.png"; 
+import Boat from "../assets/boat.png";       
 
 function InviteFriendsStart() {
   const navigate = useNavigate();
-
+  const [username, setUsername] = useState("Guest"); 
   const [selectedMode, setSelectedMode] = useState("quiz");
   const [selectedTimer, setSelectedTimer] = useState("45");
   const [friends] = useState(["Sarah", "Andrew"]);
@@ -34,7 +39,24 @@ function InviteFriendsStart() {
   };
 
   return (
-    <div className="invite-friends-container">
+  
+    <div className="solo-start">
+      <div className="logo-wrapper">
+        <img src={blueLogo} alt="StudyStream Logo" className="logo-mark" />
+        <span className="brand-text">StudyStream</span>
+      </div>
+      <div className="home-button-wrapper">
+        <Link to="/Home">
+        <button className="home-button">
+          <img src={homeIcon} alt="Home Icon" width="20" height="20" />
+          Return Home
+        </button>
+        </Link>
+      </div>
+
+      <div className="water-solo"></div>
+
+      <img src={Boat} alt={`${username}'s boat`} className="boat-avatar-solo" />
       <div className="content-wrapper">
         {/* ---------------- TOP CARD ---------------- */}
         <div className="invite-card">
@@ -69,7 +91,7 @@ function InviteFriendsStart() {
                 onClick={() => setIsNotesOpen((prev) => !prev)}
               >
                 <span className={`notes-circle ${isNotesOpen ? "open" : ""}`}>
-                  ⌄
+                  ↓
                 </span>
 
                 <span className="notes-text">
@@ -116,14 +138,14 @@ function InviteFriendsStart() {
               >
                 Quiz
               </button>
-              <button
+              {/*<button
                 className={`mode-button flashcards-button ${
                   selectedMode === "flashcards" ? "active" : ""
                 }`}
                 onClick={() => setSelectedMode("flashcards")}
               >
                 Flashcards
-              </button>
+              </button> */}
             </div>
           </div>
 

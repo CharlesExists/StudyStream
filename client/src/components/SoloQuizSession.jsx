@@ -1,8 +1,12 @@
 import React, { use, useEffect, useState } from "react";
+import { Link, NavLink } from "react-router-dom";
+import homeIcon from '../assets/home.png';
 import { useLocation, useNavigate } from "react-router-dom";
 import "./SoloQuizSession.css";
 import { useMaterials } from "../components/MaterialsContext";
 import Boat from '../assets/boat.png';
+import "./SoloStudyStart.css";
+import blueLogo from "../assets/blueStudyStreamLogo.png";
 
 //fake questions backend replace plz and thanks
 const FAKE_QUESTIONS = [
@@ -30,7 +34,6 @@ export default function SoloQuizSession(){
     const { materialId, timerMinutes, mode} = location.state || {};
     const material = materials.find((m) => m.id === materialId) || null;
 
-    const [coins, setCoins] = useState(0);
     const [timeLeft, setTimeLeft] = useState(timerMinutes * 60);
     const [questions] = useState(FAKE_QUESTIONS);
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -53,10 +56,6 @@ export default function SoloQuizSession(){
     const handleOptionClick = (index) => {
         if (isAnswered) return;
         setSelectedOption(index); setIsAnswered(true);
-        if (index===questions[currentIndex].correctIndex){
-            const POINTS = 10;
-            setCoins((c) => c+POINTS);
-        }
     };
 
     const handleNext = () =>{
@@ -87,14 +86,12 @@ export default function SoloQuizSession(){
 
   return (
     <div className="solo-quiz-wrap">
+
         <div className="water-solo-quiz"></div>
 
         <img src={Boat} alt={`${username}'s boat`} className="boat-avatar-solo-quiz" />
 
         <div className="solo-top-bar">
-            <button className="return-home-btn" onClick={handleReturnHome}>
-          ⬅ Return Home
-        </button>
 
         <div className="solo-top-center">
           {material && (
@@ -106,10 +103,6 @@ export default function SoloQuizSession(){
             <span className="timer-label">Timer</span>
             <span className="timer-value">{formatTime(timeLeft)}</span>
           </div>
-        </div>
-
-        <div className="solo-coins-badge">
-          <span className="coins-amount">{coins}</span>
         </div>
       </div>
 

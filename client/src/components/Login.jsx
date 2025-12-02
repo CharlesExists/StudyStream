@@ -23,7 +23,6 @@ export default function Login() {
         // backend stuff
         const userCredential = await signInWithEmailAndPassword(auth, identifier, password);
         console.log("Logged in as:", userCredential.user);
-        alert(`Welcome back, ${userCredential.user.displayName || "User"}!`);
         navigate("/Home");
       } catch (e) {
         setErr(e.message || "Login failed.");
@@ -38,7 +37,6 @@ export default function Login() {
     try { // more backend stuff
       const result = await signInWithPopup(auth, googleProvider);
       console.log("Google sign-in successful:", result.user);
-      alert(`Signed in as ${result.user.displayName}`);
     } catch (e) {
       setErr(e.message || "Google sign-in failed.");
     } finally {
