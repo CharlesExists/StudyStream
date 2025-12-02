@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import Layout from "./components/Layout";
@@ -12,6 +11,7 @@ import InviteFriendsStart from "./components/InviteFriendsStart.jsx";
 import SoloQuizSession from "./components/SoloQuizSession.jsx";
 import SoloFlashcardsSession from "./components/SoloFlashcardsSession.jsx";
 import GroupStudySession from "./components/GroupStudySession.jsx";
+import Friends from "./components/Friends.jsx";
 
 export default function App() {
   return (
@@ -26,6 +26,7 @@ export default function App() {
           <Route path="/Materials" element={<Materials />}></Route>
           <Route path="/materials/create" element={<CreateNotesScreen />} />
           <Route path="/invite" element={<InviteFriendsStart />} />
+          <Route path="/Friends" element={<Friends />}></Route>
         </Route>
         <Route path="/solostudystart" element={<SoloStudyStart />}></Route> 
         <Route path="/solostudystart/quiz" element={<SoloQuizSession />}></Route> 
