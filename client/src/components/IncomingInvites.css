@@ -1,0 +1,106 @@
+.incoming-wrap {
+    min-height: 100vh;
+    padding: 32px 16px;
+    font-family: system-ui, -apple-system, Segoe UI, sans-serif;
+  }
+  
+  .incoming-inner {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  
+  .incoming-title {
+    margin: 0 0 16px;
+    font-size: 24px;
+    font-weight: 700;
+    color: #204c63;
+  }
+  
+  .incoming-empty {
+    margin-top: 8px;
+    font-size: 14px;
+    color: #6a8ba0;
+  }
+  
+  .incoming-section {
+    margin-top: 20px;
+  }
+  
+  .incoming-subtitle {
+    margin: 0 0 10px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #25506a;
+  }
+  
+  .incoming-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .invite-card {
+    background: #ffffff;
+    border-radius: 12px;
+    border: 1px solid #d6e8f3;
+    padding: 12px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 4px 10px rgba(15, 53, 79, 0.06);
+  }
+  
+  .invite-card-muted {
+    opacity: 0.7;
+  }
+  
+  .invite-main {
+    flex: 1;
+  }
+  
+  .invite-line {
+    font-size: 14px;
+    color: #18495f;
+    margin-bottom: 4px;
+  }
+  
+  .inviter-name {
+    font-weight: 700;
+  }
+  
+  .invite-meta {
+    font-size: 12px;
+    color: #6a8ba0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  
+  .invite-dot {
+    color: #9bb6c6;
+  }
+  
+  .invite-actions {
+    display: flex;
+    gap: 8px;
+  }
+  
+  .invite-btn {
+    border: none;
+    cursor: pointer;
+    font-size: 13px;
+    padding: 6px 12px;
+    border-radius: 999px;
+  }
+  
+  .invite-btn.primary {
+    background: #2466db;
+    color: #ffffff;
+  }
+  
+  .invite-btn.secondary {
+    background: #eef4fb;
+    color: #18495f;
+  }
+  
