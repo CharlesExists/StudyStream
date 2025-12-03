@@ -2,13 +2,13 @@ import React, {useState, useEffect} from "react";
 import {Link, navLink} from "react-router-dom";
 import { auth, db } from "../firebaseConfig";
 import { onAuthStateChanged } from "firebase/auth";
-import { collection, query, where, getDocs, doc, setDoc } from "firebase/firestore";
+import { collection, query, where, getDocs, doc, setDoc, onSnapshot, deleteDoc } from "firebase/firestore";
 import "./Friends.css";
 import streak from "../assets/streak.png";
 import coin from "../assets/coin.png";
 import boat from "../assets/boat.png";
 
-function FriendCard({ friend }) {
+function FriendCard({ friend, onRemove }) {
     return (
         <div className="friend-card">
             <div className="friend-left">
@@ -24,6 +24,12 @@ function FriendCard({ friend }) {
                 <p className="friend-level">Level: {friend.accountLevel}</p>
             </div>
             <div className="friend-right">
+                <button 
+                    className="friend-close-button"
+                    onClick={() => onRemove(friend)}
+                >
+                    x
+                </button>
                 <div className="friend-stats">
                 <div className="stat-pill stat-pill--streak">
                     <span className="stat-icon">
@@ -101,7 +107,7 @@ function AddFriend({isOpen, onClose}) {
             // Add to YOUR friends subcollection
             const yourFriendRef = doc(db, "users", currentUser.uid, "friends", friendUser.id);
             await setDoc(yourFriendRef, {
-            name: friendUser.name || friendUser.email,
+            name: friendUser.name,
             email: friendUser.email,
             accountLevel: friendUser.level || 1,
             addedAt: new Date().toISOString()
@@ -110,7 +116,7 @@ function AddFriend({isOpen, onClose}) {
             // Add YOU to THEIR friends subcollection
             const theirFriendRef = doc(db, "users", friendUser.id, "friends", currentUser.uid);
             await setDoc(theirFriendRef, {
-            name: currentUser.displayName || currentUser.email,
+            name: currentUser.displayName,
             email: currentUser.email,
             //accountLevel: fetch("users").doc(currentUser.uid).get().then(doc => doc.data().level) || 1,
 
@@ -119,7 +125,7 @@ function AddFriend({isOpen, onClose}) {
             addedAt: new Date().toISOString()
             });
             
-            setMessage(`Added ${friendUser.name || friendUser.email} as a friend!`);
+            setMessage(`Added ${friendUser.name} as a friend!`);
             setSearchResults([]);
             setSearchQuery("");
             
@@ -177,6 +183,23 @@ export default function Friends() {
     const [loading, setLoading] = useState(true);
     const [showAddFriend, setShowAddFriend] = useState(false);
 
+    const handleRemoveFriend = async (friend) => {
+        if (!currentUser) return;
+
+        try {
+            // Remove friend from your friends subcollection
+            const yourFriendRef = doc(db, "users", currentUser.uid, "friends", friend.id);
+            await deleteDoc(yourFriendRef);
+
+            // Remove yourself from their friends subcollection
+            const theirFriendRef = doc(db, "users", friend.id, "friends", currentUser.uid);
+            await deleteDoc(theirFriendRef);
+
+        } catch (error) {
+            console.error("Error removing friend: ", error);
+        }
+    };
+
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => { //whenever auth state changes
             console.log("Current User:", user); 
@@ -187,28 +210,28 @@ export default function Friends() {
         return () => unsubscribe();
     }, []);
     useEffect(() => {
-        const fetchFriends = async () => {
-            if (!currentUser) return; //if no currentUser, exit
+        if (!currentUser) return;
 
-            try {
-                setLoading(true);
+        const friendsRef = collection(db, "users", currentUser.uid, "friends");
+        const q = query(friendsRef);
 
-                const friendsRef = collection(db, "users", currentUser.uid, "friends");
-                const friendsSnapShot = await getDocs(query(friendsRef)); //waits for firebase to fetch all of the documents in the friendsRef
-                const friendsList = friendsSnapShot.docs.map(doc => ({ 
-                    id: doc.id, 
-                    ...doc.data() //doc id is the uid of the friend, while doc.data() contains the rest of the info
-                }));
-                console.log("Friends fetched:", friendsList);
-                setFriends(friendsList); //saves it to current state
-            } catch (error) {
-                console.error("Error fetching friends:", error);
-            } finally {
-                setLoading(false); 
-            }
-        };
-        fetchFriends();
+        // Listen in real-time
+        const unsubscribe = onSnapshot(q, (snapshot) => {
+            const friendsList = snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data(),
+            }));
+            console.log("Friends updated:", friendsList);
+            setFriends(friendsList);
+            setLoading(false);
+        }, (error) => {
+            console.error("Error listening to friends:", error);
+            setLoading(false);
+        });
+
+        return () => unsubscribe();
     }, [currentUser]);
+
     return (
         <div className="friends-page">
             <h1 className="friends-header">Friends</h1>
@@ -219,7 +242,11 @@ export default function Friends() {
                     <p className="friends-loading">You have no friends added yet.</p>
                 ) : (
                     friends.map(friend => (
-                        <FriendCard key={friends.id} friend={friend} />
+                        <FriendCard 
+                            key={friend.id} 
+                            friend={friend} 
+                            onRemove={handleRemoveFriend}
+                        />
                     ))
                 )}
                 <button className="friend-add" onClick={() => setShowAddFriend(true)}>Add Friend</button>
