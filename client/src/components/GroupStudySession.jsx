@@ -46,10 +46,24 @@ export default function GroupStudySession() {
   const { materials } = useMaterials();
 
   // ----- state passed from InviteFriendsStart -----
-  const materialId = location.state?.materialId || null;
-  const timerMinutes = location.state?.timerMinutes || 45;
-  const mode = location.state?.mode || "quiz";
-  const invitedFriends = location.state?.friends || ["Andrew", "Janell"];
+  const materialId = location.state?.materialId ?? null;
+  const timerMinutes = location.state?.timerMinutes ?? 45;
+  const mode = location.state?.mode ?? "quiz";
+
+  // raw friends from navigation state (could be strings or {id, name} objects)
+  const rawFriends = Array.isArray(location.state?.friends)
+    ? location.state.friends
+    : [];
+
+  // normalize to a consistent shape: { id, name }
+  const invitedFriends = rawFriends.map((f, i) =>
+    typeof f === "string"
+      ? { id: `friend-${i}`, name: f }
+      : {
+          id: f.id || `friend-${i}`,
+          name: f.name || `Friend ${i + 1}`,
+        }
+  );
 
   // find the chosen material so we can show its title
   const material = materials.find((m) => m.id === materialId) || null;
@@ -57,10 +71,10 @@ export default function GroupStudySession() {
   // ----- players (max 3) -----
   // index 0 = you, others = friends
   const initialPlayers = [
-    { id: "you", name: "Sarah", score: 0, boatProgress: 0 }, // local user
-    ...invitedFriends.slice(0, 2).map((name, i) => ({
-      id: `friend-${i}`,
-      name,
+    { id: "you", name: "You", score: 0, boatProgress: 0 }, // local user
+    ...invitedFriends.slice(0, 2).map((f) => ({
+      id: f.id,
+      name: f.name,
       score: 0,
       boatProgress: 0,
     })),
@@ -226,7 +240,8 @@ export default function GroupStudySession() {
               let optionClass = "group-option";
               if (isAnswered) {
                 if (isSelected && isCorrect) optionClass += " is-correct";
-                else if (isSelected && !isCorrect) optionClass += " is-incorrect";
+                else if (isSelected && !isCorrect)
+                  optionClass += " is-incorrect";
               } else if (isSelected) {
                 optionClass += " is-selected";
               }

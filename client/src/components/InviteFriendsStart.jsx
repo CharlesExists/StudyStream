@@ -1,21 +1,33 @@
+// src/pages/InviteFriendsStart.jsx (or wherever you keep it)
+
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "./InviteFriendsStart.css";
 import { useMaterials } from "../components/MaterialsContext";
 import { useNavigate } from "react-router-dom";
+<<<<<<< HEAD
 import "./SoloStudyStart.css";
 import blueLogo from "../assets/blueStudyStreamLogo.png";
 import homeIcon from "../assets/home.png"; 
 import Boat from "../assets/boat.png";       
+=======
+import { createInvite } from "../api/invites"; // ✅ make sure this file exists
+>>>>>>> bb33e7ed9171a5d2064580637d6b59922b47ba8a
 
 function InviteFriendsStart() {
   const navigate = useNavigate();
   const [username, setUsername] = useState("Guest"); 
   const [selectedMode, setSelectedMode] = useState("quiz");
   const [selectedTimer, setSelectedTimer] = useState("45");
-  const [friends] = useState(["Sarah", "Andrew"]);
   const [isNotesOpen, setIsNotesOpen] = useState(false);
   const [selectedMaterialId, setSelectedMaterialId] = useState(null);
+  const [isStarting, setIsStarting] = useState(false);
+
+  // For now, mock some friends – later you’ll replace with real user data
+  const [friends] = useState([
+    { id: "user_sarah", name: "Sarah" },
+    { id: "user_andrew", name: "Andrew" },
+  ]);
 
   // ✅ shared materials coming from context (Materials page writes to this)
   const { materials } = useMaterials();
@@ -24,18 +36,43 @@ function InviteFriendsStart() {
   const selectedMaterial =
     materials.find((m) => m.id === selectedMaterialId) || materials[0] || null;
 
-  const handleStart = () => {
-    if (!selectedMaterial) return; // nothing to study with
+  // TODO: replace with real sessionId from backend / route
+  const sessionId = "TEMP_SESSION_ID";
 
-    // navigate to GroupStudySession and pass everything we need
-    navigate("/GroupStudySession", {
-      state: {
-        materialId: selectedMaterial.id,
-        timerMinutes: Number(selectedTimer), // "45" -> 45
-        mode: selectedMode,                  // "quiz" or "flashcards"
-        friends,                             // ["Sarah", "Andrew"]
-      },
-    });
+  const handleStart = async () => {
+    if (!selectedMaterial) return;
+    if (!friends.length) return;
+
+    try {
+      setIsStarting(true);
+
+      // 1) Create invites for each friend
+      await Promise.all(
+        friends.map((friend) =>
+          createInvite(
+            sessionId,
+            friend.id,
+            "Join my group study session on StudyStream!"
+          )
+        )
+      );
+
+      // 2) Navigate to the group session screen
+      navigate("/GroupStudySession", {
+        state: {
+          materialId: selectedMaterial.id,
+          timerMinutes: Number(selectedTimer),
+          mode: selectedMode,
+          friends, // [{ id, name }]
+          sessionId,
+        },
+      });
+    } catch (err) {
+      console.error("Error starting group session:", err);
+      // Optional: show a toast or error message here
+    } finally {
+      setIsStarting(false);
+    }
   };
 
   return (
@@ -66,14 +103,15 @@ function InviteFriendsStart() {
               type="text"
               placeholder="Invite..."
               className="invite-input"
+              // Later: hook this up to real friend search/add flow
             />
           </div>
 
           <div className="friends-list">
-            {friends.map((friend, index) => (
-              <div key={index} className="friend-chip">
+            {friends.map((friend) => (
+              <div key={friend.id} className="friend-chip">
                 <div className="friend-icon">⛵</div>
-                <span className="friend-name">{friend}</span>
+                <span className="friend-name">{friend.name}</span>
               </div>
             ))}
           </div>
@@ -201,8 +239,12 @@ function InviteFriendsStart() {
                 </button>
               </div>
 
-              <button className="start-button" onClick={handleStart}>
-                Start!
+              <button
+                className="start-button"
+                onClick={handleStart}
+                disabled={isStarting}
+              >
+                {isStarting ? "Starting..." : "Start!"}
               </button>
             </div>
           </div>
