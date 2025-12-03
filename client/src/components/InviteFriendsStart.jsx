@@ -5,14 +5,11 @@ import { Link } from "react-router-dom";
 import "./InviteFriendsStart.css";
 import { useMaterials } from "../components/MaterialsContext";
 import { useNavigate } from "react-router-dom";
-<<<<<<< HEAD
 import "./SoloStudyStart.css";
 import blueLogo from "../assets/blueStudyStreamLogo.png";
 import homeIcon from "../assets/home.png"; 
 import Boat from "../assets/boat.png";       
-=======
 import { createInvite } from "../api/invites"; // ✅ make sure this file exists
->>>>>>> bb33e7ed9171a5d2064580637d6b59922b47ba8a
 
 function InviteFriendsStart() {
   const navigate = useNavigate();
