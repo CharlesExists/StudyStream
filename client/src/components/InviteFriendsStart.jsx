@@ -1,6 +1,6 @@
-// src/pages/InviteFriendsStart.jsx (or wherever you keep it)
+// src/pages/InviteFriendsStart.jsx 
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import "./InviteFriendsStart.css";
 import { useMaterials } from "../components/MaterialsContext";
@@ -9,7 +9,7 @@ import "./SoloStudyStart.css";
 import blueLogo from "../assets/blueStudyStreamLogo.png";
 import homeIcon from "../assets/home.png"; 
 import Boat from "../assets/boat.png";       
-import { createInvite } from "../api/invites"; // ✅ make sure this file exists
+import { createInvite } from "../api/invites";
 
 function InviteFriendsStart() {
   const navigate = useNavigate();
@@ -20,53 +20,90 @@ function InviteFriendsStart() {
   const [selectedMaterialId, setSelectedMaterialId] = useState(null);
   const [isStarting, setIsStarting] = useState(false);
 
-  // For now, mock some friends – later you’ll replace with real user data
-  const [friends] = useState([
-    { id: "user_sarah", name: "Sarah" },
-    { id: "user_andrew", name: "Andrew" },
-  ]);
+  // session ID generated on the client for now
+  const [sessionId] = useState(() => {
+    if (window.crypto?.randomUUID) {
+      return window.crypto.randomUUID();
+    }
+    return `session_${Date.now()}`;
+  });
 
-  // ✅ shared materials coming from context (Materials page writes to this)
+  // "All friends" list — LATER this should come from backend / context.
+  // For now it's just mocked data:
+  const allFriends = useMemo(
+    () => [
+    { id: "u1", name: "Andrew" },
+    { id: "u2", name: "Janell" },
+    { id: "u3", name: "Sarah" },
+    { id: "u4", name: "Charles" },
+  ], 
+  []
+); 
+  // You can replace this with something like:
+  // const { friends: allFriends } = useFriendsContext();
+
+  // invited/selected friends (chips)
+  const [invitedFriends, setInvitedFriends] = useState([]); // [{id, name}]
+  const [searchTerm, setSearchTerm] = useState("");
+
+  // shared materials from context
   const { materials } = useMaterials();
 
-  // pick either the explicitly selected one or default to the first material
   const selectedMaterial =
     materials.find((m) => m.id === selectedMaterialId) || materials[0] || null;
 
-  // TODO: replace with real sessionId from backend / route
-  const sessionId = "TEMP_SESSION_ID";
+  //  Filter friends by searchTerm & exclude already invited
+  const filteredFriends = useMemo(() => {
+    const term = searchTerm.trim().toLowerCase();
+    if (!term) return [];
+
+    return allFriends.filter(
+      (f) =>
+        f.name.toLowerCase().includes(term) &&
+        !invitedFriends.some((inv) => inv.id === f.id)
+    );
+  }, [allFriends, invitedFriends, searchTerm]);
+
+  const handleSelectFriend = (friend) => {
+    setInvitedFriends((prev) => [...prev, friend]);
+    setSearchTerm("");
+  };
+
+  const removeFriend = (id) => {
+    setInvitedFriends((prev) => prev.filter((f) => f.id !== id));
+  };
 
   const handleStart = async () => {
     if (!selectedMaterial) return;
-    if (!friends.length) return;
+    if (!invitedFriends.length) return; // no one to invite
 
     try {
       setIsStarting(true);
 
-      // 1) Create invites for each friend
+      // create invites for each selected friend
       await Promise.all(
-        friends.map((friend) =>
+        invitedFriends.map((friend) =>
           createInvite(
             sessionId,
-            friend.id,
+            friend.id, // backend will map this to a real user later
             "Join my group study session on StudyStream!"
           )
         )
       );
 
-      // 2) Navigate to the group session screen
+      // navigate into the group session
       navigate("/GroupStudySession", {
         state: {
           materialId: selectedMaterial.id,
           timerMinutes: Number(selectedTimer),
           mode: selectedMode,
-          friends, // [{ id, name }]
+          friends: invitedFriends, // [{id, name}]
           sessionId,
         },
       });
     } catch (err) {
       console.error("Error starting group session:", err);
-      // Optional: show a toast or error message here
+      // TODO: show user-facing error message
     } finally {
       setIsStarting(false);
     }
@@ -98,17 +135,51 @@ function InviteFriendsStart() {
             <span className="search-icon">🔍</span>
             <input
               type="text"
-              placeholder="Invite..."
+              placeholder="Search your friends..."
               className="invite-input"
-              // Later: hook this up to real friend search/add flow
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
 
+          {/* 🆕 Search results dropdown (only from your friends list) */}
+          {searchTerm.trim() && filteredFriends.length > 0 && (
+            <ul className="friend-search-results">
+              {filteredFriends.map((friend) => (
+                <li
+                  key={friend.id}
+                  className="friend-search-item"
+                  onClick={() => handleSelectFriend(friend)}
+                >
+                  <span className="friend-search-name">{friend.name}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+
+          {searchTerm.trim() && filteredFriends.length === 0 && (
+            <div className="friend-search-empty">
+              No friends found with that name.
+            </div>
+          )}
+
           <div className="friends-list">
-            {friends.map((friend) => (
+            {invitedFriends.length === 0 && (
+              <span className="friends-empty">
+                No friends invited yet — search above to add.
+              </span>
+            )}
+            {invitedFriends.map((friend) => (
               <div key={friend.id} className="friend-chip">
                 <div className="friend-icon">⛵</div>
                 <span className="friend-name">{friend.name}</span>
+                <button
+                  className="friend-remove"
+                  type="button"
+                  onClick={() => removeFriend(friend.id)}
+                >
+                  ×
+                </button>
               </div>
             ))}
           </div>
@@ -239,7 +310,7 @@ function InviteFriendsStart() {
               <button
                 className="start-button"
                 onClick={handleStart}
-                disabled={isStarting}
+                disabled={isStarting || !selectedMaterial || !invitedFriends.length}
               >
                 {isStarting ? "Starting..." : "Start!"}
               </button>
