@@ -1,0 +1,173 @@
+/* Flashcards-specific styles (keeps topbar/water/boat in SoloQuizSession.css) */
+
+/* Wrapper so it doesn't clash with solo-quiz-wrap */
+.solo-flashcards-wrap {
+  min-height: 100vh;
+  width: 100%;
+  position: relative;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  background: linear-gradient(180deg, #A4E5FF 51.44%, #E6F8FF 65.87%);
+  font-family: "Instrument Sans", sans-serif;
+}
+
+/* Water + boat names unique to flashcards to avoid collisions */
+.water-solo-flashcards {
+  width: 200%;
+  max-width: none;
+  height: 16vw;
+  max-height: 170px;
+  background: linear-gradient(180deg, #1AABE5 21.15%, #2466D8 100%);
+  position: absolute;
+  z-index: 0;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.boat-avatar-solo-flashcards {
+  position: absolute;
+  transform: translateX(-50%) scale(0.32);
+  bottom: -85px;
+  left: 12.5%;
+  z-index: 1;
+}
+
+/* Central white box for flashcards (distinct name) */
+.solo-flashcards-card {
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  padding: 40px;
+  margin: 120px auto 40px auto;
+  width: min(900px, 92%);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  z-index: 2;
+  position: relative;
+}
+
+/* Flashcard itself */
+.flashcard {
+  width: 100%;
+  height: 300px;
+  max-height: 50vh;
+  perspective: 1000px;
+  cursor: pointer;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Faces */
+.flashcard .flashcard-face {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  border-radius: 12px;
+  backface-visibility: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  transition: transform 320ms ease, opacity 240ms ease;
+}
+
+.flashcard-front {
+  background: linear-gradient(180deg, #F8FAFF 0%, #FFFFFF 100%);
+  color: #16325C;
+  transform: rotateY(0deg) translateZ(0);
+}
+
+.flashcard-back {
+  background: linear-gradient(180deg, #FFF8F9 0%, #FFFFFF 100%);
+  color: #4A1F2E;
+  transform: rotateY(180deg);
+}
+
+/* flipped state */
+.flashcard.flipped .flashcard-front {
+  transform: rotateY(-180deg);
+  opacity: 0;
+}
+.flashcard.flipped .flashcard-back {
+  transform: rotateY(0deg);
+  opacity: 1;
+}
+
+/* Card content */
+.card-index {
+  font-size: 14px;
+  color: #6b7280;
+  font-weight: 600;
+}
+.card-content {
+  font-size: 26px;
+  font-weight: 700;
+  text-align: center;
+  max-width: 100%;
+}
+.card-hint {
+  font-size: 13px;
+  color: #9aa6b2;
+}
+
+/* Footer nav */
+.flashcards-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.flashcards-nav {
+  display: flex;
+  gap: 12px;
+}
+
+.nav-btn {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: none;
+  background-color: #2466DB;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  box-shadow: 0 6px 14px rgba(36,102,219,0.16);
+}
+.nav-btn:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* small secondary controls */
+.flashcards-controls {
+  display: flex;
+  gap: 8px;
+}
+.small-btn {
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: none;
+  background: #E6F8FF;
+  color: #1AABE5;
+  font-weight: 700;
+  cursor: pointer;
+}
+.small-btn:hover { transform: translateY(-2px); }
+
+/* Responsive */
+@media (max-width: 720px) {
+  .flashcard { height: 260px; }
+  .card-content { font-size: 20px; }
+  .solo-flashcards-card { padding: 20px; margin-top: 100px; }
+}
