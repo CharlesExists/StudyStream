@@ -25,9 +25,15 @@ export default function NavBar() {
             <NavLink className="menuLink" to="/Materials">
                 <img src={materialsIcon} alt="Materials" className="icon-img"/> Materials
             </NavLink>
-            <NavLink className="menuLink" to="/Calendar">
+<<<<<<< HEAD
+            {/*<NavLink className="menuLink" to="/Calendar">
                 <img src={calendarIcon} alt="Calendar" className="icon-img"/> Calendar
+            </NavLink>*/}
+=======
+            <NavLink className="menuLink" to="/Invites">
+                <img src={calendarIcon} alt="Invites" className="icon-img"/> Invites
             </NavLink>
+>>>>>>> 5e504f2 (invitefriends)
             <NavLink className="menuLink" to="/Friends">
                 <img src={friendsIcon} alt="Friends" className="icon-img"/> Friends
             </NavLink>
@@ -37,9 +43,9 @@ export default function NavBar() {
             <NavLink className="menuLink" to="/MyProfile">
                 <img src={profileIcon} alt="My Profile" className="icon-img"/> My Profile
             </NavLink>
-            <NavLink className="menuLink" to="/Settings">
+            {/*<NavLink className="menuLink" to="/Settings">
                 <img src={settingsIcon} alt="Settings" className="icon-img"/> Settings
-            </NavLink>
+            </NavLink>*/}
         </nav>
     )
 }
