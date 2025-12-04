@@ -14,6 +14,7 @@ import GroupStudySession from "./components/GroupStudySession.jsx";
 import Friends from "./components/Friends.jsx";
 import Shop from "./components/Shop.jsx";
 import IncomingInvites from "./components/IncomingInvites";
+import Profile from "./components/Profile.jsx";
 
 export default function App() {
   return (
@@ -30,6 +31,7 @@ export default function App() {
           <Route path="/invite" element={<InviteFriendsStart />} />
           <Route path="/Friends" element={<Friends />}></Route>
           <Route path="/Shop" element={<Shop />} />
+          <Route path="/MyProfile" element={<Profile />}></Route> 
           <Route path="/Invites" element={<IncomingInvites />} />
         </Route>
         <Route path="/solostudystart" element={<SoloStudyStart />}></Route> 
