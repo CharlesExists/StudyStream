@@ -1,4 +1,7 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
+import { auth, db } from "../firebaseConfig";
+import { onAuthStateChanged } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
 import { Link, NavLink } from "react-router-dom";
 import "./Home.css";
 import Streak from '../assets/streak.png'; 
@@ -14,11 +17,46 @@ import Boat from '../assets/boat.png';
 import Dock from '../assets/fullDock.png';
 
 export default function Home() {
-    const [username, setUsername] = useState("Guest"); 
+    const [username, setUsername] = useState(""); 
     const [boat, setBoat] = useState(Boat);
     localStorage.setItem("userBoat",Boat);
     const [coins, setCoins] = useState(0);
     const [streak, setStreak] = useState(0);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                try {
+                    // Get user document from Firestore
+                    const userDocRef = doc(db, "users", user.uid);
+                    const userDoc = await getDoc(userDocRef);
+                    
+                    if (userDoc.exists()) {
+                        const userData = userDoc.data();
+                        setUsername(userData.name.split(" ")[0]);
+                        
+                        /*
+                        setCoins(userData.coins ?? 0);
+                        setStreak(userData.streak ?? 0);
+                        if (userData.boat) {
+                            setBoat(userData.boat);
+                        }
+                        */
+                    }
+                } catch (error) {
+                    console.error("Error fetching user data:", error);
+                }
+            } else {
+                // No user logged in
+                setUsername("Guest");
+            }
+            setLoading(false);
+        });
+
+        return () => unsubscribe();
+    }, []);
+
     return (
         <>
         <div className="welcome-section">
@@ -45,11 +83,11 @@ export default function Home() {
             </div>
             
             <Link to="/QuickStartPlaceholder" className="quick-start-link">
-  <div className="quick-start">
-      <h2 className="quick-start-title">Quick Start!</h2>
-      <h2 className="quick-start-content">Calculus | Flashcards | 1 Hour</h2>
-  </div>
-</Link>
+        <div className="quick-start">
+            <h2 className="quick-start-title">Quick Start!</h2>
+            <h2 className="quick-start-content">Calculus | Flashcards | 1 Hour</h2>
+        </div>
+        </Link>
 
         </div>
         </>

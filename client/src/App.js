@@ -13,12 +13,14 @@ import SoloFlashcardsSession from "./components/SoloFlashcardsSession.jsx";
 import GroupStudySession from "./components/GroupStudySession.jsx";
 import Friends from "./components/Friends.jsx";
 import Shop from "./components/Shop.jsx";
+import IncomingInvites from "./components/IncomingInvites";
+import Profile from "./components/Profile.jsx";
 
 export default function App() {
   return (
     <div>
       <Routes>
-        <Route index element={<Login/ >} />
+        <Route index element={<Login />} />
         <Route path="/Login" element={<Login />} />
         <Route path="/SignUp" element={<SignUp />}></Route> 
         <Route element={<Layout />}>
@@ -26,8 +28,16 @@ export default function App() {
           <Route path="/" element={<Navigate to="/Materials" replace />} />
           <Route path="/Materials" element={<Materials />}></Route>
           <Route path="/materials/create" element={<CreateNotesScreen />} />
+<<<<<<< HEAD
           <Route path="/Friends" element={<Friends />}></Route>
           <Route path="/Shop" element={<Shop />} />
+=======
+          <Route path="/invite" element={<InviteFriendsStart />} />
+          <Route path="/Friends" element={<Friends />}></Route>
+          <Route path="/Shop" element={<Shop />} />
+          <Route path="/MyProfile" element={<Profile />}></Route> 
+          <Route path="/Invites" element={<IncomingInvites />} />
+>>>>>>> origin/main
         </Route>
         <Route path="/solostudystart" element={<SoloStudyStart />}></Route> 
         <Route path="/invite" element={<InviteFriendsStart />} />
