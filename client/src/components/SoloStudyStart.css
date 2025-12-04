@@ -9,32 +9,34 @@
 
 .logo-wrapper {
     position: relative; display: flex;
-    top: -5px; left: -25px;
+    top: -5px; 
     align-items: center;
-    gap: 10px;          
+    gap: 10px;  
+    margin-left: 20px;        
 }
 
 .solo-content-wrapper {
     position: relative; z-index: 1;
     display: flex; flex-direction: column; 
+    width: 1050px; margin: 50px 0 0 335px;
 }
 
  .water-solo {
-    width: 1520px; height: 245px;
-    flex-shrink: 0;
-    background: linear-gradient(180deg, #1AABE5 21.15%, #2466DB 100%);
-    position: absolute; top: 410px; left: 50%; transform: translateX(-50%);
-    z-index: 0;
+  width: 200%; max-width: none;
+  height: 16vw; max-height: 245px;
+  background: linear-gradient(180deg, #1AABE5 21.15%, #2466D8 100%);
+  position: absolute; z-index: 0;
+  top: 73vh; left: 50px; transform: translateX(-50%); z-index: 0;
 }
 
 .boat-avatar-solo{
-    position: absolute; transform: translateX(-50%);
-    bottom: 40px; left: 50%;
+    position: absolute; transform: translateX(-50%) scale(.6);
+    bottom: 85px; left: 12.5%;
 }
 
 .home-button {
-    display: inline-flex; margin-top: 20px;
-    position: relative; left: -28px;
+    display: inline-flex; margin-top: 20px; margin-left: 20px;
+    position: relative; 
     align-items: center; gap: 10px;                   
     background-color: #E6E6E6; color: #454545;
     border: 5px solid #E6E6E6; border-radius: 20px;         
@@ -75,7 +77,6 @@
   min-width: 120px;
 }
 
-/* Notes Selection */
 .notes-selection {
   flex: 1;
   display: flex;
@@ -107,7 +108,6 @@
   color: #2466DB;
 }
 
-/* Type Buttons */
 .type-buttons {
   display: flex;
   gap: 20px;
@@ -128,16 +128,16 @@
 }
 
 .quiz-button {
-  background: #6337b0;
-  color: white;
+  background: #D3BFF6;
+  color: #5B33A2;
 }
 
 .quiz-button:hover {
-  background: #532d91;
+  background: #C8AEF6;
 }
 
 .quiz-button.active {
-  background: #5B33A2;
+  background: #B399E0;
   box-shadow: 0 6px 16px rgba(123, 95, 181, 0.4);
   transform: translateY(-2px);
 }
@@ -157,7 +157,6 @@
   transform: translateY(-2px);
 }
 
-/* Timer Row */
 .timer-row {
   align-items: stretch;
 }
@@ -199,7 +198,6 @@
   transform: translateY(-2px);
 }
 
-/* Start Button */
 .start-button {
   padding: 18px 48px;
   border: none;
@@ -225,7 +223,6 @@
   transform: translateY(0);
 }
 
-/* Blue pill container */
 .notes-selection {
   display: flex;
   align-items: center;
@@ -239,7 +236,6 @@
   position: relative;
 }
 
-/* Icon on the left inside pill */
 .notes-icon {
   width: 28px;
   height: 28px;
@@ -252,7 +248,6 @@
   font-size: 16px;
 }
 
-/* Text inside pill */
 .notes-text {
   font-size: 18px;
   font-weight: 500;
@@ -262,7 +257,6 @@
   text-overflow: ellipsis;
 }
 
-/* Arrow */
 .dropdown-arrow {
   margin-left: auto;
   font-size: 16px;
@@ -287,22 +281,18 @@
   transition: transform 0.25s ease;
 }
 
-/* rotate arrow when open */
 .notes-circle.open {
   transform: rotate(180deg);
 }
 
-/* ============================
-   DROPDOWN MENU
-   ============================ */
-/* The wrapper around the pill + menu */
+
 .notes-wrapper {
-  position: relative;      /* so the menu is positioned under this */
+  position: relative;    
 }
 
 .notes-dropdown-menu {
   position: absolute;
-  top: 110%;                  /* sits right below the pill */
+  top: 110%;              
   left: 0;
   background: white;
   width: 100%;
@@ -314,7 +304,6 @@
   animation: dropdownFade 0.18s ease-out;
 }
 
-/* Each dropdown item */
 .notes-dropdown-item {
   padding: 10px 16px;
   font-size: 16px;
@@ -326,7 +315,6 @@
   background-color: #E7F2FF;
 }
 
-/* Simple fade animation */
 @keyframes dropdownFade {
   from {
     opacity: 0;
@@ -339,7 +327,6 @@
 }
 
 
-/* Responsive */
 @media (max-width: 768px) {
   .content-wrapper {
     max-width: 100%;

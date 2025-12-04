@@ -204,7 +204,7 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     transition: transform 140ms ease, box-shadow 140ms ease;
     flex: 1;
-    opacity: 0.6;
+    opacity: 0.6; margin-left: 40px;
 }
 
 .action-btn:hover {
@@ -217,12 +217,23 @@
     padding: 20px 28px;
     border-radius: 16px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    max-width: 600px;
-    margin: 0 auto 40px auto;
+    max-width: 500px;
+    margin: 0 auto 40px auto; margin-left: 140px;
     width: 100%;
     opacity: 0.6;
 
 }
+
+.quick-start-link {
+    display: block;
+    text-decoration: none;
+}
+
+.quick-start-link:hover .quick-start {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
 
 .quick-start-title {
     font-size: 22px;

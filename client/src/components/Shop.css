@@ -1,0 +1,176 @@
+/* Page background */
+.sail-shop-page {
+    min-height: 100vh;
+    margin: 0;
+    padding: 60px 0 120px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    position: relative;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+  
+  /* Main white card */
+  .sail-shop-card {
+    width: 980px;
+    max-width: 95vw;
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 40px 40px 56px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
+  }
+  
+  /* Tabs */
+  .sail-shop-tabs {
+    display: flex;
+    margin-bottom: 40px;
+  }
+  
+  .sail-tab {
+    flex: 1;
+    height: 82px;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    font-size: 32px;
+    font-weight: 600;
+    font-family: "Georgia", "Times New Roman", serif;
+    background: #dadada;
+    color: #444;
+  }
+  
+  .sail-tab:first-child {
+    border-radius: 4px 0 0 0;
+  }
+  
+  .sail-tab:last-child {
+    border-radius: 0 4px 0 0;
+  }
+  
+  .sail-tab-active {
+    background: #1AABE5;
+    color: #2466DB;
+  }
+  
+  /* Items panel */
+  .sail-items-wrapper {
+    background: #f3f3f3;
+    border-radius: 10px;
+    padding: 28px 26px 32px;
+    display: flex;
+    justify-content: space-between;
+    gap: 28px;
+  }
+  
+  /* Individual item card */
+  .sail-item {
+    flex: 1;
+    max-width: 170px;
+    background: #dfdfdf;
+    border-radius: 12px;
+    padding: 18px 12px 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Placeholder where the boat illustration would go */
+  .sail-item-placeholder {
+    width: 100%;
+    height: 95px;
+    border-radius: 10px;
+    background: #dfdfdf;
+  }
+  
+  /* Labels under each card */
+  .sail-item-label {
+    margin-top: 16px;
+    text-align: center;
+  }
+  
+  .sail-item-name {
+    font-weight: 700;
+    font-size: 14px;
+    margin-bottom: 4px;
+  }
+  
+  .sail-item-xp {
+    font-size: 12px;
+    color: #555;
+  }
+  
+  /* Purchase panel at bottom-right */
+  .sail-purchase-panel {
+    position: absolute;
+    right: 120px;
+    bottom: 60px;
+    width: 380px;
+    max-width: 80vw;
+    background: #D3D3D3;
+    border-radius: 16px;
+    padding: 24px 28px 20px;
+    box-shadow: 0 14px 24px rgba(0, 0, 0, 0.25);
+  }
+  
+  .purchase-line {
+    margin: 0;
+    font-size: 22px;
+    line-height: 1.3;
+  }
+  
+  .purchase-accent {
+    font-weight: 700;
+    color: #444;
+  }
+  
+  .purchase-xp-line {
+    margin: 8px 0 20px;
+    font-size: 22px;
+    font-weight: 600;
+  }
+  
+  /* Buttons in purchase panel */
+  .purchase-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+  
+  .purchase-btn {
+    min-width: 72px;
+    padding: 6px 16px;
+    border-radius: 6px;
+    border: none;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+  }
+  
+  .purchase-btn.primary {
+    background: #E6F8FF;
+    color: #2466DB;
+  }
+  
+  .purchase-btn.secondary {
+    background: #E6F8FF;
+    color: #2466db;
+  }
+  
+  /* Small-screen tweaks */
+  @media (max-width: 900px) {
+    .sail-items-wrapper {
+      overflow-x: auto;
+    }
+  
+    .sail-item {
+      min-width: 150px;
+    }
+  
+    .sail-purchase-panel {
+      position: static;
+      margin-left: 20px;
+      margin-top: 24px;
+    }
+  }
+  

@@ -6,6 +6,8 @@ import authRoutes from "./routes/authRoutes.js";
 import sessionRoutes from "./routes/sessionRoutes.js";
 import materials from "./routes/materials.js";
 import calendarRoutes from "./routes/calendarRoutes.js";
+import friendRoutes from "./routes/friends.js";
+
 
 
 const app = express();
@@ -42,6 +44,8 @@ app.use("/", sessionRoutes);
 app.use("/", materials);
 
 app.use("/", calendarRoutes); 
+
+app.use("/", friendRoutes);
 
 
 app.get("/protected", verifyToken, (req, res) => {
