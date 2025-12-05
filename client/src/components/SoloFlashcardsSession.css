@@ -177,14 +177,10 @@
 
 .session-dock {
   position: absolute;
-  bottom: 28px;
+  bottom: 0;
   right: 0;
-  width: 180px;
-  transform: translateX(20px);
-  z-index: 3;
-  opacity: 0;
-  animation: dockFadeIn 1.4s ease forwards;
-  animation-delay: 0.3s;
+  width: 240px;
+  z-index: 2;
 }
 
 @keyframes dockFadeIn {

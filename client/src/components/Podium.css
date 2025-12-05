@@ -1,0 +1,222 @@
+/* ===========================
+   PODIUM PAGE LAYOUT
+=========================== */
+
+.podium-layout {
+  min-height: 100vh;
+  width: 100%;
+  padding: 40px;
+  position: relative;
+  overflow: hidden;
+  font-family: "Instrument Sans", sans-serif;
+
+  /* soft sky gradient like GroupStudy */
+  background: linear-gradient(180deg, #A4E5FF 40%, #E6F8FF 75%);
+}
+
+/*************************************
+  LOGO
+*************************************/
+.podium-logo {
+  position: absolute;
+  top: 32px;
+  left: 32px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.podium-brand {
+  font-family: "Young Serif", serif;
+  font-size: 24px;
+  font-weight: 800;
+  color: #1AABE5;
+}
+
+/*************************************
+  TITLE
+*************************************/
+.podium-title {
+  text-align: center;
+  margin-top: 60px;
+  font-size: 46px;
+  font-weight: 800;
+  color: #16325C;
+  animation: fadeSlideDown 0.6s ease both;
+}
+
+@keyframes fadeSlideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/*************************************
+  PODIUM WRAPPER
+*************************************/
+.podium-wrapper {
+  margin-top: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 70px;
+  position: relative;
+}
+
+/*************************************
+  INDIVIDUAL COLUMN
+*************************************/
+.podium-column {
+  min-width: 170px;
+  text-align: center;
+  position: relative;
+}
+
+/* winner glow */
+.podium-column.first .podium-name,
+.podium-column.first .podium-rank {
+  text-shadow: 0 0 8px rgba(218, 165, 32, 0.55);
+}
+
+/*************************************
+  TEXT
+*************************************/
+.podium-rank {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 4px;
+  color: #16325C;
+}
+
+.podium-name {
+  font-size: 22px;
+  font-weight: 700;
+  color: #16325C;
+  margin-bottom: 2px;
+}
+
+.podium-score {
+  font-size: 18px;
+  color: #1f2b44;
+  margin-bottom: 14px;
+}
+
+.gold {
+  color: #DAA520;
+}
+
+/*************************************
+  BLOCK HEIGHTS
+*************************************/
+.podium-block {
+  width: 100%;
+  border-radius: 18px 18px 0 0;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+}
+
+.first-block {
+  height: 200px;
+  background: #FFD66B;
+}
+
+.second-block {
+  height: 150px;
+  background: #D4E4FF;
+}
+
+.third-block {
+  height: 120px;
+  background: #FFECC7;
+}
+
+/*************************************
+  ANIMATIONS
+*************************************/
+.fade-up {
+  opacity: 0;
+  transform: translateY(30px);
+  animation: fadeUp 0.8s ease forwards;
+}
+
+.fade-up.delay-1 {
+  animation-delay: 0.25s;
+}
+
+@keyframes fadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/*************************************
+  HOME BUTTON
+*************************************/
+.podium-home-btn {
+  position: absolute;
+  bottom: 40px;
+  right: 40px;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  background: #E6E6E6;
+  border: 5px solid #E6E6E6;
+  border-radius: 24px;
+  padding: 12px 22px;
+
+  font-size: 16px;
+  font-weight: 700;
+  color: #444;
+  cursor: pointer;
+
+  box-shadow: 0 6px 16px rgba(0,0,0,0.18);
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+
+.podium-home-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(0,0,0,0.28);
+}
+
+/*************************************
+  RESPONSIVE
+*************************************/
+@media (max-width: 900px) {
+  .podium-wrapper {
+    gap: 26px;
+  }
+}
+
+@media (max-width: 700px) {
+  .podium-wrapper {
+    flex-direction: row;
+    gap: 16px;
+  }
+
+  .podium-column {
+    min-width: 120px;
+  }
+
+  .first-block {
+    height: 150px;
+  }
+
+  .second-block {
+    height: 120px;
+  }
+
+  .third-block {
+    height: 100px;
+  }
+
+  .podium-title {
+    font-size: 34px;
+  }
+}
