@@ -60,8 +60,6 @@ export default function SoloQuizSession() {
     Array(FAKE_QUESTIONS.length).fill(null)
   );
 
-  // ⭐ FIXED BOAT MOVEMENT
-  // boat moves up to 80% during answering; last 20% reserved for ending animation
   const step = 0.7 / questions.length;
   const [boatProgress, setBoatProgress] = useState(0);
 
@@ -102,7 +100,6 @@ export default function SoloQuizSession() {
     const percent = computeScorePercent(answers);
     setScorePercent(percent);
 
-    // ⭐ FINAL DOCK LANDING — ONLY HERE DO WE MOVE TO 100%
     setBoatProgress(1);
 
     setTimeout(() => {
@@ -134,12 +131,10 @@ export default function SoloQuizSession() {
 
       const current = questions[currentIndex];
 
-      // ⭐ MOVE BOAT ONLY ON CORRECT ANSWERS — but only up to 80%
       if (index === current.correctIndex) {
         setBoatProgress((prevP) => Math.min(prevP + step, 0.7));
       }
 
-      // ⭐ END SESSION ONLY WHEN ALL ANSWERS FILLED OR TIMER ENDS
       const allAnswered = next.every((ans) => ans !== null);
 
       if (allAnswered && timeLeft > 0) {

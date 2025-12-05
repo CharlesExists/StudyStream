@@ -147,7 +147,6 @@
   color: #1b4faa;
 }
 
-/* water + boat (unique names) */
 
 .solo-quiz-water {
   width: 100%;
@@ -159,12 +158,11 @@
   z-index: 0;
 }
 
-/* Full-width track so boat travels across entire water */
 .solo-quiz-boat-track {
   position: absolute;
-  bottom: 50px;       /* lower the boat */
+  bottom: 50px; 
   left: 0;
-  width: 95vw;       /* full viewport width */
+  width: 95vw; 
   height: 80px;
   pointer-events: none;
   z-index: 3;
@@ -179,7 +177,7 @@
 
 .solo-quiz-boat {
   transform-origin: center bottom;
-  transform: scale(0.22);     /* MUCH smaller */
+  transform: scale(0.22);  
   animation: soloQuizBoatRock 4s ease-in-out infinite;
 }
 
@@ -188,8 +186,6 @@
   50%  { transform: rotate(2deg) scale(0.22); }
   100% { transform: rotate(-2deg) scale(0.22); }
 }
-
-/* responsive */
 
 @media (max-width: 768px) {
   .solo-quiz-main {
