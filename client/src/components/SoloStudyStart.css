@@ -28,10 +28,23 @@
   position: absolute; z-index: 0;
   top: 73vh; left: 50px; transform: translateX(-50%); z-index: 0;
 }
+.boat-avatar-solo {
+    width: auto;
+    height: auto;
+    transform: scale(.6);   
+}
 
-.boat-avatar-solo{
-    position: absolute; transform: translateX(-50%) scale(.6);
-    bottom: 85px; left: 12.5%;
+.home-button-wrapper a {
+  text-decoration: none;
+}
+
+.boat-rock-wrapper {
+    position: absolute;
+    bottom: 85px;
+    left: -3.5%;
+    transform: translateX(-50%);  
+    animation: boatRockStart 4s ease-in-out infinite;
+    transform-origin: center bottom;
 }
 
 .home-button {
@@ -358,4 +371,10 @@
     width: 100%;
     margin-left: 0;
   }
+}
+
+@keyframes boatRockStart {
+    0% { transform: rotate(-2deg); }
+    50% { transform: rotate(2deg); }
+    100% { transform: rotate(-2deg); }
 }

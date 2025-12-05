@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./GroupStudySession.css";
 import { useMaterials } from "../components/MaterialsContext";
+import ExitModal from "../components/ExitModal";
+import "../components/ExitModal.css";
+
 
 // TEMP: fake questions; backend will replace this later
 const FAKE_QUESTIONS = [
@@ -82,7 +85,7 @@ export default function GroupStudySession() {
 
   const [players, setPlayers] = useState(initialPlayers);
   const [coins, setCoins] = useState(0);
-
+  const [showExit, setShowExit] = useState(false);
   // ----- quiz state -----
   const [questions] = useState(FAKE_QUESTIONS);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -169,9 +172,16 @@ export default function GroupStudySession() {
     <div className="group-session-wrap">
       {/* -------- TOP BAR -------- */}
       <div className="group-top-bar">
-        <button className="return-home-btn" onClick={handleReturnHome}>
+        <button className="return-home-btn" onClick={() => setShowExit(true)}>
           ⬅ Return Home
         </button>
+
+        <ExitModal
+          open={showExit}
+          onConfirm={() => navigate("/Home")}
+          onCancel={() => setShowExit(false)}
+        />
+
 
         <div className="group-top-center">
           {material && (

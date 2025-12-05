@@ -146,9 +146,13 @@
 
 .boat-avatar-home{
     position: absolute;
-    left: 65px; top: 25vh;
+    left: 60px; top: 25vh;
     width: 30vw; height: auto;
     z-index: 5;
+
+    transform: translateX(-50%);
+    animation: boatRock 4s ease-in-out infinite;
+    transform-origin: center bottom; 
 }
 
 .coin-counter,
@@ -186,7 +190,7 @@
 
 .actions-section {
     display: flex;
-    gap: 20px;
+    gap: 1px;
     max-width: 600px;
     margin: 0 auto 30px auto;
     width: 100%;
@@ -195,9 +199,9 @@
 .action-btn {
     background: rgba(255, 255, 255, 0.9);
     border: none;
-    padding: 16px 32px;
+    padding: 28px 40px;
     border-radius: 16px;
-    font-size: 20px;
+    font-size: 28px;
     font-weight: 700;
     color: var(--primary);
     cursor: pointer;
@@ -260,11 +264,17 @@
 
 .action-wrapper {
     position: absolute;
-    top: 25vh;
-    left: 68%;
+    top: 29.5vh;
+    left: 66%;
     transform: translateX(-50%);
     width: 100%;
     max-width: 800px;
     display: flex;
     flex-direction: column;
 }  
+
+@keyframes boatRock {
+    0% { transform: rotate(-2deg); }
+    50% { transform: rotate(2deg); }
+    100% { transform: rotate(-2deg); }
+}

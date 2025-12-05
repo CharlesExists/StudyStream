@@ -81,14 +81,6 @@ export default function Home() {
                     <button className="action-btn">Invite Friends</button>
                 </Link>
             </div>
-            
-            <Link to="/QuickStartPlaceholder" className="quick-start-link">
-        <div className="quick-start">
-            <h2 className="quick-start-title">Quick Start!</h2>
-            <h2 className="quick-start-content">Calculus | Flashcards | 1 Hour</h2>
-        </div>
-        </Link>
-
         </div>
         </>
     );

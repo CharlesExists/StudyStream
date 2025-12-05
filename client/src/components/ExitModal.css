@@ -1,0 +1,51 @@
+.exit-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.exit-modal {
+  background: #e9f5ff;
+  padding: 40px 50px;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  max-width: 420px;
+  width: 90%;
+  text-align: center;
+}
+
+.exit-text {
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 28px;
+  color: #1e2a3b;
+}
+
+.exit-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.exit-yes,
+.exit-no {
+  background: #63a9ff;
+  color: white;
+  font-size: 18px;
+  padding: 10px 26px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+  transition: transform 0.15s ease;
+}
+
+.exit-yes:hover,
+.exit-no:hover {
+  transform: translateY(-2px);
+}

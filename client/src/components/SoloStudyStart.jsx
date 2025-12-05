@@ -5,6 +5,8 @@ import "./SoloStudyStart.css";
 import blueLogo from "../assets/blueStudyStreamLogo.png";
 import homeIcon from '../assets/home.png';
 import Boat from '../assets/boat.png';
+import ExitModal from "../components/ExitModal";
+import "../components/ExitModal.css";
 
 const fakeMaterials = [
     { id: "1", title: "Calculus I" },
@@ -14,6 +16,7 @@ const fakeMaterials = [
     ];   
 
 export default function SoloStudyStart() { 
+    const [showExit, setShowExit] = useState(false);
     const [username, setUsername] = useState("Guest"); 
     const avatarBoat = localStorage.getItem("userBoat");
     const [selectedMode, setSelectedMode] = useState("quiz");
@@ -50,15 +53,25 @@ export default function SoloStudyStart() {
             </div>
 
             <div className="home-button-wrapper">
-                <Link to="/Home">
-                <button className="home-button">
-                <img src={homeIcon} alt="Home Icon" width="20" height="20" />Return Home</button>
-                </Link>
+            <button className="home-button" onClick={() => setShowExit(true)}>
+                <img src={homeIcon} alt="Home Icon" width="20" height="20" />
+                Return Home
+            </button>
             </div>
 
+        <ExitModal
+            open={showExit}
+            onConfirm={() => navigate("/Home")}
+            onCancel={() => setShowExit(false)}
+            />
+
+
         <div className="water-solo"></div>
-  
-        <img src={Boat} alt={`${username}'s boat`} className="boat-avatar-solo"/>
+        
+        <div className="boat-rock-wrapper">
+            <img src={Boat} alt={`${username}'s boat`} className="boat-avatar-solo" />
+        </div>
+
 
         <div className="solo-content-wrapper">
             <div className="settings-card-solo">
@@ -129,7 +142,7 @@ export default function SoloStudyStart() {
             </div>
 
             {/* TIMER ROW */}
-            <div className="settings-row timer-row">
+            <div className="settings-row -timer-row">
                 <label className="row-label">Timer:</label>
 
                 <div className="timer-controls">

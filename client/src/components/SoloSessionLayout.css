@@ -1,0 +1,128 @@
+/* SHARED SOLO SESSION LAYOUT FOR QUIZ + FLASHCARDS */
+
+.solo-session-layout {
+  min-height: 100vh;
+  width: 100%;
+  position: relative;
+  padding: 32px;
+  background: linear-gradient(180deg, #A4E5FF 51.44%, #E6F8FF 65.87%);
+  font-family: "Instrument Sans", sans-serif;
+}
+
+/* Logo + Home button (left side) */
+.solo-session-left {
+  position: absolute;
+  top: 32px;
+  left: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 10;
+}
+
+.solo-session-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.solo-session-home-btn {
+    display: inline-flex; margin-top: 20px; margin-left: 20px;
+    position: relative; 
+    align-items: center; gap: 10px;                   
+    background-color: #E6E6E6; color: #454545;
+    border: 5px solid #E6E6E6; border-radius: 20px;         
+    padding: 10px 16px;
+    cursor: pointer;
+    font-weight: 700; font-size: 16px; font-family: "Instrument Sans";
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 140ms ease, box-shadow 140ms ease;
+    flex: 1;
+}
+
+
+.solo-session-home-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+/* Timer (top right) */
+.solo-session-top-right {
+  position: absolute;
+  top: 32px;
+  right: 32px;
+  background: white;
+  padding: 8px 18px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 10;
+}
+
+.solo-session-timer-label {
+  font-size: 12px;
+  color: #666;
+  font-weight: 500;
+}
+
+.solo-session-timer-value {
+  font-size: 30px;
+  font-weight: 700;
+  font-family: "Courier New", monospace;
+  color: #2C3E50;
+}
+
+/* Water + Boat */
+.solo-session-water {
+  width: 200%;
+  height: 16vw;
+  max-height: 170px;
+  background: linear-gradient(180deg, #1AABE5 21.15%, #2466D8 100%);
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 0;
+}
+
+.solo-session-boat-wrapper {
+  position: absolute;
+  bottom: 85px;
+  left: -3.5%;
+  transform: translateX(-50%);
+  transform-origin: center bottom;
+  animation: boatRockSolo 4s ease-in-out infinite;
+  z-index: 2;
+}
+
+.solo-session-boat {
+  transform: scale(.6);
+}
+
+@keyframes boatRockSolo {
+  0% { transform: rotate(-2deg) scale(.6); }
+  50% { transform: rotate(2deg) scale(.6); }
+  100% { transform: rotate(-2deg) scale(.6); }
+}
+
+
+/* Shared white box */
+.solo-session-content-box {
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+  padding: 40px;
+  width: min(900px, 90%);
+  margin: 150px auto 60px auto;
+  position: relative;
+  z-index: 3;
+}
+
+.solo-session-brand-text {
+  font-family: 'Young Serif', serif;
+  font-size: 22px;
+  color: #1AABE5;
+  font-weight: 800;
+}

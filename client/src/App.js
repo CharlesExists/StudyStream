@@ -28,16 +28,11 @@ export default function App() {
           <Route path="/" element={<Navigate to="/Materials" replace />} />
           <Route path="/Materials" element={<Materials />}></Route>
           <Route path="/materials/create" element={<CreateNotesScreen />} />
-<<<<<<< HEAD
-          <Route path="/Friends" element={<Friends />}></Route>
-          <Route path="/Shop" element={<Shop />} />
-=======
-          <Route path="/invite" element={<InviteFriendsStart />} />
+
           <Route path="/Friends" element={<Friends />}></Route>
           <Route path="/Shop" element={<Shop />} />
           <Route path="/MyProfile" element={<Profile />}></Route> 
           <Route path="/Invites" element={<IncomingInvites />} />
->>>>>>> origin/main
         </Route>
         <Route path="/solostudystart" element={<SoloStudyStart />}></Route> 
         <Route path="/invite" element={<InviteFriendsStart />} />
