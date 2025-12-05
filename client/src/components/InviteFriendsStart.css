@@ -102,8 +102,6 @@
   z-index: 5;
 }
 
-
-/* invite card */
 .invite-card {
   background: white;
   border-radius: 20px;
@@ -114,7 +112,6 @@
   gap: 20px;
 }
 
-/* the ENTIRE search & dropdown section is unchanged from your peers' CSS */
 .search-bar {
   display: flex;
   align-items: center;
@@ -151,7 +148,6 @@
   background: #E6F8FF;
 }
 
-/* invited friends */
 .friends-list {
   display: flex;
   gap: 16px;
@@ -177,7 +173,6 @@
   cursor: pointer;
 }
 
-/* settings card */
 .settings-card {
   background: white;
   border-radius: 20px;
@@ -188,7 +183,6 @@
   gap: 32px;
 }
 
-/* settings rows — unchanged */
 .settings-row {
   background: #E6F8FF;
   display: flex;
@@ -202,7 +196,6 @@
   min-width: 120px;
 }
 
-/* notes (unchanged) */
 .notes-wrapper { position: relative; }
 .notes-selection {
   flex: 1;
@@ -238,15 +231,12 @@
 
 .notes-dropdown-item { padding: 10px 16px; }
 
-/* type buttons (unchanged) */
 .type-buttons { display: flex; gap: 20px; flex: 1; }
 
-/* timer buttons */
 .timer-controls { display: flex; align-items: center; gap: 20px; flex: 1; }
 
 .timer-buttons { display: flex; gap: 12px; flex-wrap: wrap; }
 
-/* fix the Timer label alignment here too */
 .timer-row .row-label {
   transform: translateY(-3px);
 }

@@ -10,7 +10,6 @@ import Coin from "../assets/coin.png";
 import ExitModal from "../components/ExitModal";
 import "../components/ExitModal.css";
 
-/* -------------------- TEMP QUESTIONS -------------------- */
 const FAKE_QUESTIONS = [
   {
     id: "gq1",
@@ -75,7 +74,6 @@ export default function GroupStudySession() {
 
   const material = materials.find((m) => m.id === materialId) || null;
 
-  /* --------------------- PLAYERS --------------------- */
   const initialPlayers = [
     { id: YOU_ID, name: "You", score: 0, boatProgress: 0, correctCount: 0 },
     ...invitedFriends.map((f, i) => ({
@@ -90,12 +88,10 @@ export default function GroupStudySession() {
   const [players, setPlayers] = useState(initialPlayers);
   const [coins, setCoins] = useState(0);
 
-  /* ⭐ FIX: SORTED PLAYERS */
   const sortedPlayers = useMemo(() => {
     return [...players].sort((a, b) => b.score - a.score);
   }, [players]);
 
-  /* --------------------- QUIZ STATE --------------------- */
   const [questions] = useState(FAKE_QUESTIONS);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState(null);
@@ -105,7 +101,6 @@ export default function GroupStudySession() {
   const [timeLeft, setTimeLeft] = useState(timerMinutes * 60);
   const [questionStart, setQuestionStart] = useState(Date.now());
 
-  /* --------------------- TIMER --------------------- */
   useEffect(() => {
     const timer = setInterval(() => {
       setTimeLeft((prev) => {
@@ -123,7 +118,6 @@ export default function GroupStudySession() {
   const currentQuestion = questions[currentIndex];
   const step = 0.7 / questions.length;
 
-  /* --------------------- HANDLE OPTION CLICK --------------------- */
   const handleOptionClick = (index) => {
     if (isAnswered || timeLeft === 0) return;
 
@@ -150,7 +144,6 @@ export default function GroupStudySession() {
     );
   };
 
-  /* --------------------- NAVIGATION --------------------- */
   const handleNext = () => {
     if (currentIndex < questions.length - 1) {
       setCurrentIndex((i) => i + 1);
@@ -169,7 +162,6 @@ export default function GroupStudySession() {
     }
   };
 
-  /* --------------------- END GAME CONDITIONS --------------------- */
   const someonePerfect = players.some(
     (p) => p.correctCount === questions.length
   );
@@ -183,8 +175,6 @@ export default function GroupStudySession() {
 
     setPlayers((prev) => {
       const updated = prev.map((p) => ({ ...p, boatProgress: 1 }));
-
-      // Navigate using the *updated* final state
       setTimeout(() => {
         navigate("/Podium", { state: { players: updated } });
       }, 1100);
@@ -194,10 +184,8 @@ export default function GroupStudySession() {
 
   }, [gameShouldEnd, navigate]);
 
-  /* --------------------- RENDER --------------------- */
   return (
     <div className="group-session-layout">
-      {/* LEFT: LOGO + HOME */}
       <div className="group-session-left">
         <div className="group-session-logo">
           <img src={blueLogo} width="36" alt="logo" />
@@ -218,7 +206,6 @@ export default function GroupStudySession() {
         />
       </div>
 
-      {/* RIGHT: TIMER + XP */}
       <div className="group-session-right">
         <div className="group-session-timer">
           <span className="group-session-timer-value">
@@ -232,16 +219,13 @@ export default function GroupStudySession() {
         </div>
       </div>
 
-      {/* TITLE */}
       {material && (
         <div className="group-session-title">
           {material.title} • {mode === "quiz" ? "Quiz" : "Flashcards"}
         </div>
       )}
 
-      {/* MAIN CONTENT */}
       <div className="group-main">
-        {/* SCOREBOARD */}
         <div className="group-scoreboard-card">
           <div className="group-scoreboard-title">Scoreboard</div>
 
@@ -258,7 +242,6 @@ export default function GroupStudySession() {
           ))}
         </div>
 
-        {/* QUESTION CARD */}
         <div className="group-question-card">
           <h2 className="group-question-header">
             {currentIndex + 1}) {currentQuestion.prompt}
@@ -333,11 +316,9 @@ export default function GroupStudySession() {
         </div>
       </div>
 
-      {/* WATER + DOCK */}
       <div className="group-quiz-water" />
       <img src={Dock} className="group-dock" alt="dock" />
 
-      {/* BOATS */}
       <div className="group-quiz-boat-track">
         {sortedPlayers.map((p, index) => {
           const live = players.find((pp) => pp.id === p.id);

@@ -1,7 +1,3 @@
-/* ===========================
-   PODIUM PAGE LAYOUT
-=========================== */
-
 .podium-layout {
   min-height: 100vh;
   width: 100%;
@@ -9,14 +5,9 @@
   position: relative;
   overflow: hidden;
   font-family: "Instrument Sans", sans-serif;
-
-  /* soft sky gradient like GroupStudy */
   background: linear-gradient(180deg, #A4E5FF 40%, #E6F8FF 75%);
 }
 
-/*************************************
-  LOGO
-*************************************/
 .podium-logo {
   position: absolute;
   top: 32px;
@@ -33,9 +24,6 @@
   color: #1AABE5;
 }
 
-/*************************************
-  TITLE
-*************************************/
 .podium-title {
   text-align: center;
   margin-top: 60px;
@@ -56,9 +44,6 @@
   }
 }
 
-/*************************************
-  PODIUM WRAPPER
-*************************************/
 .podium-wrapper {
   margin-top: 100px;
   display: flex;
@@ -68,24 +53,17 @@
   position: relative;
 }
 
-/*************************************
-  INDIVIDUAL COLUMN
-*************************************/
 .podium-column {
   min-width: 170px;
   text-align: center;
   position: relative;
 }
 
-/* winner glow */
 .podium-column.first .podium-name,
 .podium-column.first .podium-rank {
   text-shadow: 0 0 8px rgba(218, 165, 32, 0.55);
 }
 
-/*************************************
-  TEXT
-*************************************/
 .podium-rank {
   font-size: 28px;
   font-weight: 700;
@@ -110,9 +88,6 @@
   color: #DAA520;
 }
 
-/*************************************
-  BLOCK HEIGHTS
-*************************************/
 .podium-block {
   width: 100%;
   border-radius: 18px 18px 0 0;
@@ -134,9 +109,6 @@
   background: #FFECC7;
 }
 
-/*************************************
-  ANIMATIONS
-*************************************/
 .fade-up {
   opacity: 0;
   transform: translateY(30px);
@@ -154,9 +126,6 @@
   }
 }
 
-/*************************************
-  HOME BUTTON
-*************************************/
 .podium-home-btn {
   position: absolute;
   bottom: 40px;
@@ -185,9 +154,6 @@
   box-shadow: 0 8px 22px rgba(0,0,0,0.28);
 }
 
-/*************************************
-  RESPONSIVE
-*************************************/
 @media (max-width: 900px) {
   .podium-wrapper {
     gap: 26px;

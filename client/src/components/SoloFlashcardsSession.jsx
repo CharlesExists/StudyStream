@@ -32,9 +32,6 @@ export default function SoloFlashcardsSession() {
 
   const effectiveMinutes = Number(timerMinutes) || 45;
 
-  // ------------------------------
-  // MAIN STATE
-  // ------------------------------
   const [cards] = useState(FAKE_CARDS);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
@@ -47,9 +44,6 @@ export default function SoloFlashcardsSession() {
 
   const [cardsStudied, setCardsStudied] = useState(0);
 
-  // ------------------------------
-  // TIMER + BOAT MOVEMENT
-  // ------------------------------
   useEffect(() => {
     if (showFinish) return;
 
@@ -70,9 +64,6 @@ export default function SoloFlashcardsSession() {
     return () => clearInterval(interval);
   }, [effectiveMinutes, showFinish]);
 
-  // ------------------------------
-  // END SESSION (manual or timer)
-  // ------------------------------
   const endSession = () => {
     if (showFinish) return;
     setCardsStudied(cards.length);
@@ -81,9 +72,6 @@ export default function SoloFlashcardsSession() {
     setTimeout(() => setShowFinish(true), 1000);
   };
 
-  // ------------------------------
-  // TIMER END
-  // ------------------------------
   useEffect(() => {
     if (timeLeft === 0 && !showFinish) {
       endSession();
@@ -95,10 +83,7 @@ export default function SoloFlashcardsSession() {
     const sec = s % 60;
     return `${m}:${sec.toString().padStart(2, "0")}`;
   };
-
-  // ------------------------------
-  // CARD ACTIONS
-  // ------------------------------
+  
   const handleFlip = () => {
     if (!showFinish) setIsFlipped((f) => !f);
   };
@@ -117,9 +102,6 @@ export default function SoloFlashcardsSession() {
     }
   };
 
-  // ------------------------------
-  // RESET SESSION
-  // ------------------------------
   const handleReset = () => {
     setCurrentIndex(0);
     setIsFlipped(false);
@@ -130,7 +112,6 @@ export default function SoloFlashcardsSession() {
   return (
     <div className="solo-session-layout">
 
-      {/* LEFT BUTTONS */}
       <div className="solo-session-left">
         <div className="solo-session-logo">
           <img src={blueLogo} width="36" />
@@ -148,14 +129,12 @@ export default function SoloFlashcardsSession() {
         />
       </div>
 
-      {/* TOP RIGHT TIMER */}
       <div className="solo-session-top-right">
         {material && <span className="solo-material-name">{material.title}</span>}
         <span className="solo-session-timer-label">Timer</span>
         <span className="solo-session-timer-value">{formatTime(timeLeft)}</span>
       </div>
 
-      {/* WATER + BOAT */}
       <div className="flashcards-water" />
       <div className="flashcards-boat-track">
         <div
@@ -168,7 +147,6 @@ export default function SoloFlashcardsSession() {
 
       <img src={Dock} className="session-dock" />
 
-      {/* MAIN CONTENT */}
       <div className="flashcards-main">
         <div
           className={`flashcard ${isFlipped ? "flipped" : ""}`}
@@ -189,7 +167,6 @@ export default function SoloFlashcardsSession() {
           </div>
         </div>
 
-        {/* FOOTER NAVIGATION */}
         {currentIndex < cards.length - 1 ? (
           <div className="flashcards-footer">
             <div className="flashcards-nav">
@@ -230,9 +207,7 @@ export default function SoloFlashcardsSession() {
             </div>
           </div>
         ) : (
-          // ------------------------------
-          // FINAL CARD SCREEN
-          // ------------------------------
+
           <div className="flashcards-footer end-screen-buttons">
           <button className="end-btn reset" onClick={handleReset}>
             Reset

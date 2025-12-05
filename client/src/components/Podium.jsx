@@ -15,7 +15,6 @@ export default function Podium() {
     ? location.state.players
     : [];
 
-  // Sort by score
   const sorted = [...players].sort((a, b) => b.score - a.score);
 
   const first = sorted[0];
@@ -27,22 +26,18 @@ export default function Podium() {
   return (
     <div className="podium-layout">
 
-      {/* Confetti burst */}
       <ConfettiBurst trigger={true} />
 
-      {/* Logo */}
       <div className="podium-logo">
         <img src={blueLogo} width="40" alt="logo" />
         <span className="podium-brand">StudyStream</span>
       </div>
 
-      {/* Title */}
       <h1 className="podium-title">Session Complete! 🎉</h1>
 
       {hasPlayers ? (
         <div className="podium-wrapper">
 
-          {/* Second Place */}
           {second && (
             <div className="podium-column second fade-up">
               <div className="podium-rank">2nd</div>
@@ -52,7 +47,6 @@ export default function Podium() {
             </div>
           )}
 
-          {/* First Place */}
           {first && (
             <div className="podium-column first fade-up delay-1">
               <div className="podium-rank gold">1st</div>
@@ -62,7 +56,6 @@ export default function Podium() {
             </div>
           )}
 
-          {/* Third Place */}
           {third && (
             <div className="podium-column third fade-up">
               <div className="podium-rank">3rd</div>
@@ -78,7 +71,6 @@ export default function Podium() {
         </div>
       )}
 
-      {/* Home button */}
       <button
         className="podium-home-btn"
         onClick={() => navigate("/Home")}

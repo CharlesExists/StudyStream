@@ -76,13 +76,11 @@ export default function SoloStudyStart() {
         <div className="solo-content-wrapper">
             <div className="settings-card-solo">
 
-            {/* NOTES ROW */}
             <div className="settings-row-solo">
                 <label className="row-label-solo">Notes:</label>
 
-                {/* Wrapper needed for dropdown positioning */}
                 <div className="notes-wrapper">
-                {/* Blue pill */}
+
                 <div
                     className="notes-selection"
                     onClick={() => setIsNotesOpen((prev) => !prev)}
@@ -98,7 +96,6 @@ export default function SoloStudyStart() {
             
                 </div>
 
-                {/* Dropdown list */}
                 {isNotesOpen && (
                     <ul className="notes-dropdown-menu">
                     {materials.map((m) => (
@@ -118,7 +115,6 @@ export default function SoloStudyStart() {
                 </div>
             </div>
 
-            {/* TYPE ROW */}
             <div className="settings-row-solo">
                 <label className="row-label-solo">Type:</label>
                 <div className="type-buttons">
@@ -141,7 +137,6 @@ export default function SoloStudyStart() {
                 </div>
             </div>
 
-            {/* TIMER ROW */}
             <div className="settings-row -timer-row">
                 <label className="row-label">Timer:</label>
 
