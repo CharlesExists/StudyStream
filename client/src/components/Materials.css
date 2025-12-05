@@ -260,3 +260,54 @@ html, body {
   .g-badge { background: #fff; color: #4885ed; border: 1px solid #cfe0f8; }
   .t-badge { background: #e8f0ff; color: #2b5bd7; border: 1px solid #c8d6ff; }
     
+  .ss-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(15,53,79,0.4);
+    backdrop-filter: blur(2px);
+    z-index: 50;
+    display: grid;
+    place-items: center;
+  }
+
+  .ss-modal {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 10px 24px rgba(15,53,79,0.2);
+    width: 400px;
+    max-width: calc(100% - 40px);
+    padding: 24px;
+  }
+
+  .ss-modal-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 12px;
+  }
+
+  .ss-modal-btn {
+    appearance: none;
+    border: 0;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 12px 14px;
+    border-radius: 10px;
+  }
+
+  .ss-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 24px;
+  }
+
+  .ss-modal-input {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 14px;
+    border: 1px solid #d6e8f3;
+    border-radius: 8px;
+    outline: none;
+    transition: border-color .12s ease;
+  }
