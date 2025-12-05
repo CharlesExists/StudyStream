@@ -1,19 +1,63 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { auth, db } from "../firebaseConfig";
+import { onAuthStateChanged } from "firebase/auth";
+import { doc, getDoc, collection, getDocs } from "firebase/firestore";
 import "./Profile.css";
 
 export default function Profile() {
-  // TODO: replace with real data (e.g., from Firestore)
-  const profile = {
-    name: "Janell Magante",
-    username: "jnellmarla903",
+  const [profile, setProfile] = useState({
+    name: "Loading...",
+    email: "",
     fire: 1021,
     coins: 1026,
     sessions: [
       { title: "Calculus I", tag: "Solo" },
       { title: "Chemistry (w/ Sarah)" }
     ],
-    friends: ["sarah123", "andrew456"]
-  };
+    friends: []
+  });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        try {
+          const userDocRef = doc(db, "users", user.uid);
+          const userDoc = await getDoc(userDocRef);
+          
+          let userName = user.email.split('@')[0];
+          let userEmail = user.email;
+          
+          if (userDoc.exists()) {
+            const userData = userDoc.data();
+            userName = userData.name || userName;
+          }
+
+          // Get user's friends
+          const friendsRef = collection(db, "users", user.uid, "friends");
+          const friendsSnapshot = await getDocs(friendsRef);
+          const friendsList = friendsSnapshot.docs.map(doc => doc.data().name || doc.data().email);
+
+          setProfile(prev => ({
+            ...prev,
+            name: userName,
+            email: userEmail,
+            friends: friendsList
+          }));
+          
+        } catch (error) {
+          console.error("Error fetching profile data:", error);
+        }
+      }
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  if (loading) {
+    return <div className="pf-wrap">Loading profile...</div>;
+  }
 
   return (
     <div className="pf-wrap">
@@ -29,7 +73,7 @@ export default function Profile() {
 
           <div className="pf-info">
             <h1 className="pf-name">{profile.name}</h1>
-            <p className="pf-username">{profile.username}</p>
+            <p className="pf-username">{profile.email}</p>
           </div>
 
           <div className="pf-stats">
@@ -54,9 +98,13 @@ export default function Profile() {
             <div className="pf-card">
               <h3>Friends</h3>
               <div className="pf-friends">
-                {profile.friends.map((f) => (
-                  <span key={f} className="pf-pill">{f}</span>
-                ))}
+                {profile.friends.length === 0 ? (
+                  <p>No friends yet</p>
+                ) : (
+                  profile.friends.map((f, i) => (
+                    <span key={i} className="pf-pill">{f}</span>
+                  ))
+                )}
               </div>
             </div>
           </div>
