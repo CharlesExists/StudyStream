@@ -1,10 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./GroupStudySession.css";
 import { useMaterials } from "../components/MaterialsContext";
-import ExitModal from "../components/ExitModal";
-import "../components/ExitModal.css";
-
 
 // TEMP: fake questions; backend will replace this later
 const FAKE_QUESTIONS = [
@@ -43,113 +40,99 @@ const FAKE_QUESTIONS = [
   },
 ];
 
+function formatTime(secs) {
+  const m = String(Math.floor(secs / 60)).padStart(2, "0");
+  const s = String(secs % 60).padStart(2, "0");
+  return `${m}:${s}`;
+}
+
 export default function GroupStudySession() {
   const location = useLocation();
   const navigate = useNavigate();
   const { materials } = useMaterials();
 
-  // ----- state passed from InviteFriendsStart -----
+  const YOU_ID = "you-player";
   const materialId = location.state?.materialId ?? null;
-  const timerMinutes = location.state?.timerMinutes ?? 45;
+  const timerMinutes = Number(location.state?.timerMinutes ?? 45);
   const mode = location.state?.mode ?? "quiz";
 
-  // raw friends from navigation state (could be strings or {id, name} objects)
   const rawFriends = Array.isArray(location.state?.friends)
     ? location.state.friends
     : [];
 
-  // normalize to a consistent shape: { id, name }
   const invitedFriends = rawFriends.map((f, i) =>
     typeof f === "string"
       ? { id: `friend-${i}`, name: f }
-      : {
-          id: f.id || `friend-${i}`,
-          name: f.name || `Friend ${i + 1}`,
-        }
+      : { id: f.id || `friend-${i}`, name: f.name || `Friend ${i + 1}` }
   );
 
-  // find the chosen material so we can show its title
   const material = materials.find((m) => m.id === materialId) || null;
 
-  // ----- players (max 3) -----
-  // index 0 = you, others = friends
   const initialPlayers = [
-    { id: "you", name: "You", score: 0, boatProgress: 0 }, // local user
-    ...invitedFriends.slice(0, 2).map((f) => ({
-      id: f.id,
+    { id: YOU_ID, name: "You", score: 0, boatProgress: 0, correctCount: 0 },
+    ...invitedFriends.map((f, i) => ({
+      id: f.id || `friend-${i}`,
       name: f.name,
       score: 0,
       boatProgress: 0,
+      correctCount: 0,
     })),
   ];
 
   const [players, setPlayers] = useState(initialPlayers);
   const [coins, setCoins] = useState(0);
-  const [showExit, setShowExit] = useState(false);
+
   // ----- quiz state -----
   const [questions] = useState(FAKE_QUESTIONS);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState(null);
   const [isAnswered, setIsAnswered] = useState(false);
+  const [showExit, setShowExit] = useState(false);
 
-  // ----- timer (in seconds) -----
   const [timeLeft, setTimeLeft] = useState(timerMinutes * 60);
+  const [questionStart, setQuestionStart] = useState(Date.now());
 
   useEffect(() => {
-    const interval = setInterval(() => {
+    const timer = setInterval(() => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
-          clearInterval(interval);
+          clearInterval(timer);
           return 0;
         }
         return prev - 1;
       });
     }, 1000);
 
-    return () => clearInterval(interval);
+    return () => clearInterval(timer);
   }, [timerMinutes]);
 
-  if (!questions.length) {
-    return (
-      <div className="group-session-wrap">
-        <p>No questions available yet.</p>
-      </div>
-    );
-  }
-
   const currentQuestion = questions[currentIndex];
-  const questionNumber = currentIndex + 1;
-  const minutes = String(Math.floor(timeLeft / 60)).padStart(2, "0");
-  const seconds = String(timeLeft % 60).padStart(2, "0");
-
-  const handleReturnHome = () => {
-    navigate("/Home");
-  };
+  const step = 0.7 / questions.length;
 
   const handleOptionClick = (index) => {
-    if (isAnswered) return; // prevent changing after answer
+    if (isAnswered || timeLeft === 0) return;
+
     setSelectedOption(index);
     setIsAnswered(true);
 
-    const isCorrect = index === currentQuestion.correctIndex;
-    if (!isCorrect) return;
+    const correct = index === currentQuestion.correctIndex;
+    const dt = (Date.now() - questionStart) / 1000;
+    const earned = correct ? (dt <= 2 ? 20 : 10) : 0;
 
-    const POINTS = 10;
+    setCoins((c) => c + earned);
 
-    // award points & move your boat (players[0])
     setPlayers((prev) =>
-      prev.map((p, idx) =>
-        idx === 0
-          ? {
+      prev.map((p) =>
+        p.id !== YOU_ID
+          ? p
+          : {
               ...p,
-              score: p.score + POINTS,
-              boatProgress: Math.min(p.boatProgress + 0.15, 1), // move across water
+              score: p.score + earned,
+              correctCount: correct ? p.correctCount + 1 : p.correctCount,
+              boatProgress: Math.min(p.boatProgress + step, 0.7),
             }
-          : p
       )
     );
-
-    setCoins((c) => c + POINTS);
   };
 
   const handleNext = () => {
@@ -157,6 +140,7 @@ export default function GroupStudySession() {
       setCurrentIndex((i) => i + 1);
       setSelectedOption(null);
       setIsAnswered(false);
+      setQuestionStart(Date.now());
     }
   };
 
@@ -165,14 +149,37 @@ export default function GroupStudySession() {
       setCurrentIndex((i) => i - 1);
       setSelectedOption(null);
       setIsAnswered(false);
+      setQuestionStart(Date.now());
     }
   };
+
+  const someonePerfect = players.some(
+    (p) => p.correctCount === questions.length
+  );
+  const lastAnswered =
+    currentIndex === questions.length - 1 && isAnswered;
+
+  const gameShouldEnd = someonePerfect || (timeLeft === 0 && lastAnswered);
+
+  useEffect(() => {
+    if (!gameShouldEnd) return;
+
+    setPlayers((prev) => {
+      const updated = prev.map((p) => ({ ...p, boatProgress: 1 }));
+      setTimeout(() => {
+        navigate("/Podium", { state: { players: updated } });
+      }, 1100);
+
+      return updated;
+    });
+
+  }, [gameShouldEnd, navigate]);
 
   return (
     <div className="group-session-wrap">
       {/* -------- TOP BAR -------- */}
       <div className="group-top-bar">
-        <button className="return-home-btn" onClick={() => setShowExit(true)}>
+        <button className="return-home-btn" onClick={handleReturnHome}>
           ⬅ Return Home
         </button>
 
@@ -183,83 +190,71 @@ export default function GroupStudySession() {
         />
 
 
-        <div className="group-top-center">
-          {material && (
-            <span className="group-material-name">
-              {material.title} • {mode === "quiz" ? "Quiz" : "Flashcards"}
-            </span>
-          )}
-          <div className="group-timer">
-            <span className="timer-label">Timer</span>
-            <span className="timer-value">
-              {minutes}:{seconds}
-            </span>
-          </div>
+        <ExitModal
+          open={showExit}
+          onConfirm={() => navigate("/Home")}
+          onCancel={() => setShowExit(false)}
+        />
+      </div>
+
+      <div className="group-session-right">
+        <div className="group-session-timer">
+          <span className="group-session-timer-value">
+            {formatTime(timeLeft)}
+          </span>
         </div>
 
-        <div className="group-coins-badge">
-          <span className="coins-amount">{coins}</span>
+        <div className="group-session-xp">
+          <img src={Coin} alt="xp" className="group-session-xp-icon" />
+          <span className="group-session-xp-value">{coins}</span>
         </div>
       </div>
 
-      <div className="group-layout">
-        {/* -------- LEFT: SCOREBOARD + BOATS -------- */}
-        <div className="group-left-pane">
-          <div className="scoreboard-card">
-            <div className="scoreboard-header">Scoreboard</div>
-            <div className="scoreboard-body">
-              {players.slice(0, 3).map((p) => (
-                <div
-                  key={p.id}
-                  className={`scoreboard-row ${p.id === "you" ? "is-you" : ""}`}
-                >
-                  <span className="scoreboard-name">{p.name}</span>
-                  <span className="scoreboard-score">{p.score}</span>
-                </div>
-              ))}
-            </div>
-          </div>
+      {material && (
+        <div className="group-session-title">
+          {material.title} • {mode === "quiz" ? "Quiz" : "Flashcards"}
+        </div>
+      )}
 
-          <div className="boats-row">
-            {players.slice(0, 3).map((p) => (
-              <div key={p.id} className="boat-lane">
-                {/* you can style .boat-icon as the little sailboat and translate it */}
-                <div
-                  className="boat-icon"
-                  style={{ transform: `translateX(${p.boatProgress * 100}%)` }}
-                />
-                <div className="boat-name">{p.name}</div>
-              </div>
-            ))}
-          </div>
+      <div className="group-main">
+        <div className="group-scoreboard-card">
+          <div className="group-scoreboard-title">Scoreboard</div>
+
+          {sortedPlayers.map((p) => (
+            <div
+              key={p.id}
+              className={`group-score-row ${
+                p.id === YOU_ID ? "is-you" : ""
+              }`}
+            >
+              <span>{p.name}</span>
+              <span>{p.score}</span>
+            </div>
+          ))}
         </div>
 
-        {/* -------- RIGHT: QUESTION CARD -------- */}
         <div className="group-question-card">
-          <div className="group-question-header">
-            <h2 className="group-question-title">
-              {questionNumber}) {currentQuestion.prompt}
-            </h2>
-          </div>
+          <h2 className="group-question-header">
+            {currentIndex + 1}) {currentQuestion.prompt}
+          </h2>
 
           <div className="group-options-grid">
             {currentQuestion.options.map((opt, index) => {
               const isCorrect = index === currentQuestion.correctIndex;
               const isSelected = index === selectedOption;
 
-              let optionClass = "group-option";
+              let cls = "group-option";
               if (isAnswered) {
-                if (isSelected && isCorrect) optionClass += " is-correct";
-                else if (isSelected && !isCorrect)
-                  optionClass += " is-incorrect";
+                if (isSelected && isCorrect) cls += " correct";
+                else if (isSelected && !isCorrect) cls += " incorrect";
               } else if (isSelected) {
-                optionClass += " is-selected";
+                cls += " selected";
               }
 
               return (
                 <button
                   key={index}
-                  className={optionClass}
+                  className={cls}
                   onClick={() => handleOptionClick(index)}
                 >
                   {opt}
@@ -268,33 +263,75 @@ export default function GroupStudySession() {
             })}
           </div>
 
-          <div className="group-footer-row">
-            <div className="group-nav-buttons">
-              <button
-                className="group-nav-btn"
-                onClick={handlePrev}
-                disabled={currentIndex === 0}
-              >
-                ⬅
-              </button>
-              <button
-                className="group-nav-btn"
-                onClick={handleNext}
-                disabled={currentIndex === questions.length - 1}
-              >
-                ➜
-              </button>
+          <div className="group-bottom-row">
+            <button
+              className="group-nav-btn"
+              disabled={currentIndex === 0}
+              onClick={handlePrev}
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M15 19L8 12L15 5"
+                  stroke="white"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </button>
+
+            <div className="group-progress-pill">
+              {currentIndex + 1}/{questions.length}
             </div>
 
-            <div className="group-progress">
-              {questionNumber}/{questions.length}
-            </div>
-
-            <button className="group-favorite-btn">
-              ☆ Favorite this question
+            <button
+              className="group-nav-btn"
+              disabled={currentIndex === questions.length - 1}
+              onClick={handleNext}
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M9 5L16 12L9 19"
+                  stroke="white"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
             </button>
           </div>
+
+          <button className="group-favorite-btn">
+            ☆ Favorite this question
+          </button>
         </div>
+      </div>
+
+      <div className="group-quiz-water" />
+      <img src={Dock} className="group-dock" alt="dock" />
+
+      <div className="group-quiz-boat-track">
+        {sortedPlayers.map((p, index) => {
+          const live = players.find((pp) => pp.id === p.id);
+
+          return (
+            <div
+              key={p.id}
+              className="group-boat-lane"
+              style={{ top: `${index * 75}px` }}
+            >
+              <div
+                className="group-boat-wrapper"
+                style={{
+                  transform: `translateX(calc(${live.boatProgress} * (100vw - 300px)))`,
+                }}
+              >
+                <div className="group-boat-label">{p.name}</div>
+                <img src={Boat} alt={p.name} className="group-quiz-boat" />
+              </div>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

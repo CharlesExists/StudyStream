@@ -1,11 +1,16 @@
 import React, { useState } from "react";
 import "./Shop.css";
+import redSail from "../assets/redSail.png";
+import orangeSail from "../assets/orangeSail.png";
+import yellowSail from "../assets/yellowSail.png";
+import blueSail from "../assets/blueSail.png";
+
 
 const sailItems = [
-  { name: "Red", xp: "100 XP" },
-  { name: "Orange", xp: "150 XP" },
-  { name: "Yellow", xp: "175 XP" },
-  { name: "Blue", xp: "300 XP" },
+  { name: "Red", xp: "100 XP", image: redSail },
+  { name: "Orange", xp: "150 XP", image: orangeSail },
+  { name: "Yellow", xp: "175 XP", image: yellowSail },
+  { name: "Blue", xp: "300 XP", image: blueSail },
   { name: "NYU", xp: "9999 XP" },
 ];
 
@@ -49,6 +54,11 @@ export default function SailShop() {
         <div className="sail-items-wrapper">
           {items.map((item) => (
             <div className="sail-item" key={item.name}>
+              <img 
+                src={item.image} 
+                alt={item.name} 
+                className="sail-item-image" 
+              />
               <div className="sail-item-placeholder" />
               <div className="sail-item-label">
                 <div className="sail-item-name">{item.name}</div>

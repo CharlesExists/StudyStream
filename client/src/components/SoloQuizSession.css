@@ -1,10 +1,14 @@
 .solo-quiz-main {
+.solo-quiz-main {
   width: 100%;
+  max-width: 960px;
+  margin: 150px auto 80px auto;
   max-width: 960px;
   margin: 150px auto 80px auto;
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 18px;
   gap: 18px;
 }
 
@@ -15,9 +19,13 @@
   border-radius: 14px;
   display: flex;
   justify-content: center;
+  justify-content: center;
   align-items: center;
 }
 
+.solo-quiz-title {
+  margin: 0;
+  font-size: 22px;
 .solo-quiz-title {
   margin: 0;
   font-size: 22px;
@@ -32,17 +40,31 @@
   border-radius: 18px;
   padding: 40px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+.solo-quiz-card {
+  width: 100%;
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 40px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
   display: flex;
   flex-direction: column;
+  gap: 32px;
   gap: 32px;
 }
 
 .solo-quiz-options-grid {
+.solo-quiz-options-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 18px;
+  gap: 18px;
 }
 
+.solo-quiz-option {
+  background-color: #cfeaff;
+  color: #2466db;
+  border-radius: 16px;
+  padding: 26px 28px;
 .solo-quiz-option {
   background-color: #cfeaff;
   color: #2466db;
@@ -54,6 +76,7 @@
   text-align: center;
   cursor: pointer;
   transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -62,7 +85,11 @@
 .solo-quiz-option:hover:enabled {
   background-color: #2466db;
   color: #ffffff;
+.solo-quiz-option:hover:enabled {
+  background-color: #2466db;
+  color: #ffffff;
   transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(36, 102, 219, 0.25);
   box-shadow: 0 4px 12px rgba(36, 102, 219, 0.25);
 }
 
@@ -70,8 +97,16 @@
   background-color: #7bb2ff;
   color: #ffffff;
   border-color: #2466db;
+.solo-quiz-option-selected {
+  background-color: #7bb2ff;
+  color: #ffffff;
+  border-color: #2466db;
 }
 
+.solo-quiz-option-correct {
+  background-color: #4caf50;
+  color: #ffffff;
+  border-color: #2e7d32;
 .solo-quiz-option-correct {
   background-color: #4caf50;
   color: #ffffff;

@@ -1,4 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect }, { useEffect, useState } from "react";
+import { auth, db } from "../firebaseConfig";
+import { onAuthStateChanged } from "firebase/auth";
+import { doc, getDoc, collection, getDocs } from "firebase/firestore";
 import "./Profile.css";
 import { auth, db } from "../firebaseConfig";
 import {
@@ -113,7 +116,7 @@ export default function Profile() {
 
           <div className="pf-info">
             <h1 className="pf-name">{profile.name}</h1>
-            <p className="pf-username">@{profile.username}</p>
+            <p className="pf-username">@{profile.email}</p>
           </div>
 
           {/* Profile Stats */}

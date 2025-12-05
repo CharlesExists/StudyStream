@@ -1,8 +1,10 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./SoloSessionLayout.css";
+import "./SoloSessionLayout.css";
 import "./SoloQuizSession.css";
 import { useMaterials } from "../components/MaterialsContext";
+import Boat from "../assets/boat.png";
 import Boat from "../assets/boat.png";
 import blueLogo from "../assets/blueStudyStreamLogo.png";
 import homeIcon from "../assets/home.png";
@@ -402,6 +404,11 @@ export default function SoloQuizSession() {
               </button>
             </div>
 
+            <div className="solo-quiz-progress-pill">
+              {currentIndex + 1}/{questions.length}
+            </div>
+
+            <button className="solo-quiz-favorite-btn">☆ Favorite this question</button>
             <div className="solo-quiz-progress-pill">
               {currentIndex + 1}/{questions.length}
             </div>

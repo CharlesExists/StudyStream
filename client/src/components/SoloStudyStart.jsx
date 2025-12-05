@@ -3,17 +3,17 @@ import { Link, useNavigate } from "react-router-dom";
 import "./SoloStudyStart.css";
 
 import blueLogo from "../assets/blueStudyStreamLogo.png";
-import homeIcon from "../assets/home.png";
-import Boat from "../assets/boat.png";
+import homeIcon from '../assets/home.png';
+import Boat from '../assets/boat.png';
+import ExitModal from "../components/ExitModal";
+import "../components/ExitModal.css";
 
-// =========================================
-//    REAL MATERIALS LOADING
-// =========================================
-// Notes should use "file" materials (PDF, images, uploads)
-// Flashcards/Quiz should use "flashcard" materials.
-
-// NEW — load from context instead of broken local fetch
-import { useMaterials } from "../components/MaterialsContext";
+const fakeMaterials = [
+    { id: "1", title: "Calculus I" },
+    { id: "2", title: "Discrete Math – HW 3" },
+    { id: "3", title: "Psychology – Exam Review" },
+    { id: "4", title: "French Vocabulary Set" }
+    ];   
 
 export default function SoloStudyStart() {
   const [username, setUsername] = useState("Guest");
