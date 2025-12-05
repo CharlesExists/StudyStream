@@ -15,6 +15,7 @@ import Friends from "./components/Friends.jsx";
 import Shop from "./components/Shop.jsx";
 import IncomingInvites from "./components/IncomingInvites";
 import Profile from "./components/Profile.jsx";
+import Podium from "./components/Podium"; 
 
 export default function App() {
   return (
@@ -35,11 +36,12 @@ export default function App() {
           <Route path="/Invites" element={<IncomingInvites />} />
         </Route>
         <Route path="/solostudystart" element={<SoloStudyStart />}></Route> 
+
         <Route path="/invite" element={<InviteFriendsStart />} />
         <Route path="/solostudystart/quiz" element={<SoloQuizSession />}></Route> 
         <Route path="/solostudystart/flashcards" element={<SoloFlashcardsSession />}></Route> 
         <Route path="/GroupStudySession" element={<GroupStudySession />} />
-
+        <Route path="/Podium" element={<Podium />} />
       </Routes>
     </div>
   )  // render it directly
