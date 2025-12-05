@@ -28,7 +28,7 @@ export default function App() {
           <Route path="/" element={<Navigate to="/Materials" replace />} />
           <Route path="/Materials" element={<Materials />}></Route>
           <Route path="/materials/create" element={<CreateNotesScreen />} />
-          <Route path="/invite" element={<InviteFriendsStart />} />
+
           <Route path="/Friends" element={<Friends />}></Route>
           <Route path="/Shop" element={<Shop />} />
           <Route path="/MyProfile" element={<Profile />}></Route> 

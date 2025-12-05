@@ -10,19 +10,39 @@ const serviceAccount = JSON.parse(
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   storageBucket: "studystreamnyu.firebasestorage.app"
-  
 });
 
-console.log("Firebase Admin initialized for project:", serviceAccount.project_id); // log file to show that hte firebase is up and running for the project 
+console.log("Firebase Admin initialized for project:", serviceAccount.project_id);
 
 export const auth = admin.auth();
 export const db = admin.firestore();
 export const bucket = admin.storage().bucket();
 
+/* =====================================================
+   Helper: Convert Firestore Timestamp → ISO string
+   (Friends system expects this)
+===================================================== */
+export function tsToISO(ts) {
+  if (!ts) return null;
 
+  // Firestore Timestamp object
+  if (ts.toDate) {
+    return ts.toDate().toISOString();
+  }
 
-const testConnection = async () => { // code that will show that the firebase
-  // and github code are connected. if you run firebase.js in server in terminal, firestore write succesful should appear. 
+  // JavaScript Date object
+  if (ts instanceof Date) {
+    return ts.toISOString();
+  }
+
+  // Anything else: return as-is
+  return ts;
+}
+
+/* =====================================================
+   Test Firestore connection
+===================================================== */
+const testConnection = async () => {
   try {
     const docRef = db.collection("connectionTest").doc("adminCheck");
     await docRef.set({ success: true, time: new Date() });
@@ -31,6 +51,5 @@ const testConnection = async () => { // code that will show that the firebase
     console.error("Firestore test failed:", err);
   }
 };
+
 testConnection();
-
-

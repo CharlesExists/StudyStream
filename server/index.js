@@ -16,7 +16,7 @@ const app = express();
 /* --- FIX ADDED: configure CORS explicitly for frontend on 3000 --- */ 
 
 const corsOptions = {
-  origin: "http://localhost:3000",
+ origin: true, // reflect request origin automatically
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,

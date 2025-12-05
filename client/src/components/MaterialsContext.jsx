@@ -36,8 +36,15 @@ export function MaterialsProvider({ children }) {
           shared: m.shared || false,
           sub: m.shared ? "Shared" : "",
           iconType: m.type === "file" ? "paper" : "pencil",
-          fileUrl: m.fileUrl || null,   
-          type: m.type || "file",      
+
+          // file materials
+          fileUrl: m.fileUrl || null,
+
+          // NEW: include flashcards
+          flashcards: m.flashcards || [],
+
+          // preserve the material type (file or flashcards)
+          type: m.type || "file",
 
           date: created.toLocaleDateString("en-US", {
             month: "short",
@@ -52,57 +59,66 @@ export function MaterialsProvider({ children }) {
       console.error("Failed to fetch materials:", err);
     }
   }
+/* ------------------------------------------
+   ADD MATERIAL (POST /materials/create)
+-------------------------------------------*/
+async function addMaterial({ file, title, shared }) {
+  try {
+    const header = await getAuthHeader();
 
-  /* ------------------------------------------
-     ADD MATERIAL (POST /materials/create)
-  -------------------------------------------*/
-  async function addMaterial({ file, title, shared }) {
-    try {
-      const header = await getAuthHeader();
+    const form = new FormData();
 
-      const form = new FormData();
-      form.append("type", "file");            // required
-      form.append("title", title);
-      form.append("shared", shared ? "true" : "false");
-      form.append("file", file);
+    // Detect type based on file extension
+    let type = "file";
+    const ext = file.name.toLowerCase().split(".").pop();
 
+    if (ext === "json") type = "flashcards";
+    if (ext === "csv") type = "flashcards_csv";
 
-      console.log("UPLOAD TO:", `${API}/materials/create`);
+    // Required fields
+    form.append("type", type);
+    form.append("title", title);
+    form.append("shared", shared ? "true" : "false");
+    form.append("file", file);
 
-      const res = await axios.post(`${API}/materials/create`, form, {
+    console.log("UPLOAD →", type, file.name);
 
-        ...header,
-        headers: {
-          ...header.headers,
-          "Content-Type": "multipart/form-data",
-        },
-      });
+    const res = await axios.post(`${API}/materials/create`, form, {
+      ...header,
+      headers: {
+        ...header.headers,
+        "Content-Type": "multipart/form-data",
+      },
+    });
 
-      const m = res.data.material;
+    const m = res.data.material;
+    const created = m.createdAt ? new Date(m.createdAt) : new Date();
 
-      const created = m.createdAt
-        ? new Date(m.createdAt)
-        : new Date();
+    const newMaterial = {
+      id: res.data.materialId,
+      title: m.title,
+      shared: m.shared,
+      sub: m.shared ? "Shared" : "",
+      iconType: m.type === "file" ? "paper" : "pencil",
 
-      const newMaterial = {
-        id: res.data.materialId,
-        title: m.title,
-        shared: m.shared,
-        sub: m.shared ? "Shared" : "",
-        iconType: "paper",
-        fileUrl: m.fileUrl,
-        date: created.toLocaleDateString("en-US", {
-          month: "short",
-          day: "numeric",
-          year: "numeric",
-        }),
-      };
+      fileUrl: m.fileUrl || null,
+      flashcards: m.flashcards || [],
 
-      setMaterials((prev) => [newMaterial, ...prev]);
-    } catch (err) {
-      console.error("Upload failed:", err);
-    }
+      type: m.type,
+
+      date: created.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      }),
+    };
+
+    setMaterials((prev) => [newMaterial, ...prev]);
+  } catch (err) {
+    console.error("Upload failed:", err);
   }
+}
+
 
   /* ------------------------------------------
      DELETE MATERIAL (DELETE /materials/:id)

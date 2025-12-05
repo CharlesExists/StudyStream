@@ -51,8 +51,65 @@ async function removeFriendFromBackend(friendUid) {
   });
 }
 
+/* new minimal backend helpers */
+async function fetchIncomingRequests() {
+  const token = await getToken();
+  const res = await fetch(`${BASE_URL}/friends/requests`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return res.json();
+}
+
+async function fetchOutgoingRequests() {
+  const token = await getToken();
+  const res = await fetch(`${BASE_URL}/friends/requests/outgoing`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return res.json();
+}
+
+async function acceptFriendRequest(requestId) {
+  const token = await getToken();
+  await fetch(`${BASE_URL}/friends/${requestId}/accept`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
+
+async function declineFriendRequest(requestId) {
+  const token = await getToken();
+  await fetch(`${BASE_URL}/friends/${requestId}/decline`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`
+    },
+  });
+}
+
 // friend card
 function FriendCard({ friend, onRemove }) {
+  // format friendSince → "4:32 PM — Jan 5, 2025"
+  const formattedSince = friend.friendSince
+    ? (() => {
+        const date = new Date(friend.friendSince);
+
+        const time = date.toLocaleTimeString([], {
+          hour: "numeric",
+          minute: "2-digit",
+        });
+
+        const fullDate = date.toLocaleDateString([], {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        });
+
+        return `${time} — ${fullDate}`;
+      })()
+    : "—";
+
   return (
     <div className="friend-card">
       <div className="friend-left">
@@ -90,7 +147,30 @@ function FriendCard({ friend, onRemove }) {
           </div>
         </div>
 
-        <p className="friend-since">Friend since {friend.since}</p>
+        {/* FIXED: formatted friendSince */}
+        <p className="friend-since">Friend since {formattedSince}</p>
+      </div>
+    </div>
+  );
+}
+
+/* new minimal slim card */
+function SlimRequestCard({ user, actions }) {
+  return (
+    <div className="request-card">
+      <div className="request-left">
+        <div className="request-avatar">
+          <img src={boat} alt="avatar" className="request-avatar-img" />
+        </div>
+      </div>
+
+      <div className="request-main">
+        <h3 className="request-name">{user.name || user.email}</h3>
+        <p className="request-email">{user.email}</p>
+      </div>
+
+      <div className="request-actions">
+        {actions}
       </div>
     </div>
   );
@@ -199,6 +279,8 @@ function AddFriend({ isOpen, onClose }) {
 export default function Friends() {
   const [currentUser, setCurrentUser] = useState(null);
   const [friends, setFriends] = useState([]);
+  const [incomingRequests, setIncomingRequests] = useState([]); // new
+  const [outgoingRequests, setOutgoingRequests] = useState([]); // new
   const [loading, setLoading] = useState(true);
   const [showAddFriend, setShowAddFriend] = useState(false);
 
@@ -211,22 +293,29 @@ export default function Friends() {
     return () => unsubscribe();
   }, []);
 
-  // LOAD FRIENDS FROM BACKEND
+  // LOAD FRIENDS + REQUESTS
   useEffect(() => {
     if (!currentUser) return;
 
-    const loadFriends = async () => {
+    const load = async () => {
       try {
-        const data = await fetchFriendsFromBackend();
-        setFriends(data);
+        const [friendsData, incoming, outgoing] = await Promise.all([
+          fetchFriendsFromBackend(),
+          fetchIncomingRequests(),
+          fetchOutgoingRequests()
+        ]);
+
+        setFriends(friendsData);
+        setIncomingRequests(incoming);
+        setOutgoingRequests(outgoing);
       } catch (error) {
-        console.error("Failed to load friends:", error);
+        console.error("Failed to load friends or requests:", error);
       } finally {
         setLoading(false);
       }
     };
 
-    loadFriends();
+    load();
   }, [currentUser]);
 
   // REMOVE FRIEND (BACKEND)
@@ -239,10 +328,54 @@ export default function Friends() {
     }
   };
 
+  const handleAccept = async (req) => {
+    await acceptFriendRequest(req.requestId);
+    setIncomingRequests(prev => prev.filter(r => r.requestId !== req.requestId));
+  };
+
+  const handleDecline = async (req) => {
+    await declineFriendRequest(req.requestId);
+    setIncomingRequests(prev => prev.filter(r => r.requestId !== req.requestId));
+  };
+
   return (
     <div className="friends-page">
       <h1 className="friends-header">Friends</h1>
 
+      {/* Incoming Requests */}
+      {incomingRequests.length > 0 && (
+        <div className="requests-section">
+          <h2>Incoming Friend Requests</h2>
+          {incomingRequests.map(req => (
+            <SlimRequestCard
+              key={req.requestId}
+              user={req}
+              actions={
+                <>
+                  <button className="request-accept" onClick={() => handleAccept(req)}>Accept</button>
+                  <button className="request-decline" onClick={() => handleDecline(req)}>Decline</button>
+                </>
+              }
+            />
+          ))}
+        </div>
+      )}
+
+      {/* Outgoing Requests */}
+      {outgoingRequests.length > 0 && (
+        <div className="requests-section">
+          <h2>Outgoing Friend Requests</h2>
+          {outgoingRequests.map(req => (
+            <SlimRequestCard
+              key={req.requestId}
+              user={req}
+              actions={<span className="request-pending">Pending</span>}
+            />
+          ))}
+        </div>
+      )}
+
+      {/* Friends List */}
       <div className="friends-list">
         {loading ? (
           <p className="friends-loading">Loading friends...</p>

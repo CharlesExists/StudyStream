@@ -1,0 +1,243 @@
+.flashcards-main {
+  width: 100%;
+  max-width: 960px;
+  margin: 160px auto 110px auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.flashcard {
+  width: 100%;
+  height: 340px;
+  perspective: 1000px;
+  cursor: pointer;
+  border-radius: 16px;
+  position: relative;
+}
+
+.flashcard-face {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  border-radius: 16px;
+  backface-visibility: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  transition: transform 320ms ease, opacity 240ms ease;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+.flashcard-front {
+  background: linear-gradient(180deg, #f8faff 0%, #ffffff 100%);
+  color: #16325c;
+}
+
+.flashcard-back {
+  background: linear-gradient(180deg, #f0f7ff 0%, #dcebff 100%);
+  color: #16325c;
+  transform: rotateY(180deg);
+}
+
+.flashcard.flipped .flashcard-front {
+  transform: rotateY(-180deg);
+  opacity: 0;
+}
+
+.flashcard.flipped .flashcard-back {
+  transform: rotateY(0deg);
+  opacity: 1;
+}
+
+.card-index {
+  font-size: 14px;
+  color: #6b7280;
+  font-weight: 600;
+}
+
+.card-content {
+  font-size: 28px;
+  font-weight: 700;
+  text-align: center;
+  max-width: 90%;
+}
+
+.card-hint {
+  font-size: 14px;
+  color: #9aa6b2;
+}
+
+.flashcards-footer {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.flashcards-nav {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+}
+
+.flashcards-arrow {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: none;
+  background-color: #2466db;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  box-shadow: 0 6px 14px rgba(36, 102, 219, 0.16);
+}
+
+.flashcards-arrow:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.flashcards-progress-pill {
+  background-color: #2466db;
+  color: white;
+  padding: 10px 22px;
+  border-radius: 24px;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.flashcards-water {
+  width: 100%;
+  height: 150px;
+  background: linear-gradient(180deg, #1aabe5 15%, #2466d8 100%);
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  z-index: 0;
+}
+
+.flashcards-boat-track {
+  position: absolute;
+  bottom: 50px;
+  left: 0;
+  width: 95vw;
+  height: 80px;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.flashcards-boat-wrapper {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  transition: transform 1s ease-out;
+}
+
+.flashcards-boat {
+  transform-origin: center bottom;
+  transform: scale(0.22);
+  animation: flashcardsBoatRock 4s ease-in-out infinite;
+}
+
+@keyframes flashcardsBoatRock {
+  0% {
+    transform: rotate(-2deg) scale(0.22);
+  }
+  50% {
+    transform: rotate(2deg) scale(0.22);
+  }
+  100% {
+    transform: rotate(-2deg) scale(0.22);
+  }
+}
+
+@media (max-width: 768px) {
+  .flashcards-main {
+    margin: 140px auto 100px auto;
+    padding: 0 14px;
+  }
+
+  .flashcard {
+    height: 300px;
+  }
+
+  .card-content {
+    font-size: 22px;
+  }
+
+  .flashcards-nav {
+    gap: 18px;
+  }
+}
+
+.session-dock {
+  position: absolute;
+  bottom: 28px;
+  right: 0;
+  width: 180px;
+  transform: translateX(20px);
+  z-index: 3;
+  opacity: 0;
+  animation: dockFadeIn 1.4s ease forwards;
+  animation-delay: 0.3s;
+}
+
+@keyframes dockFadeIn {
+  0% { opacity: 0; transform: translateX(40px); }
+  100% { opacity: 1; transform: translateX(20px); }
+}
+
+
+/* =============================== */
+/* CUTE END-OF-SESSION BUTTONS     */
+/* =============================== */
+
+.end-screen-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 24px; margin-top: -2px;
+}
+
+/* Shared styling (matches your small-btn style but glowier + bolder) */
+.end-btn {
+  padding: 14px 26px;
+  border-radius: 16px;
+  border: none;
+  background: #A4E5FF;
+  color: #1A6FDB;
+  font-size: 20px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 6px 14px rgba(36, 102, 219, 0.18);
+  transition: transform 140ms ease, box-shadow 140ms ease, background 140ms ease;
+  font-family: "Instrument Sans", sans-serif;
+}
+
+.end-btn:hover {
+  transform: translateY(-2px);
+  background: #8DD4FF;
+  box-shadow: 0 8px 18px rgba(36, 102, 219, 0.28);
+}
+
+.end-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 10px rgba(36, 102, 219, 0.16);
+}
+
+/* Special styling for END button */
+.end-btn.end {
+  background: #4285F4;
+  color: white;
+  box-shadow: 0 6px 14px rgba(66, 133, 244, 0.35);
+}
+
+.end-btn.end:hover {
+  background: #3576e8;
+  box-shadow: 0 8px 18px rgba(66, 133, 244, 0.45);
+}

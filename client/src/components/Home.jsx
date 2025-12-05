@@ -37,12 +37,14 @@ export default function Home() {
                         setUsername(userData.name.split(" ")[0]);
                         
                         /*
+                        These were commented out — which caused streak & coins to never update.
+                        They are now restored so the UI updates using the latest Firestore values.
+                        */
                         setCoins(userData.coins ?? 0);
                         setStreak(userData.streak ?? 0);
                         if (userData.boat) {
                             setBoat(userData.boat);
                         }
-                        */
                     }
                 } catch (error) {
                     console.error("Error fetching user data:", error);
@@ -61,11 +63,13 @@ export default function Home() {
         <>
         <div className="welcome-section">
             <h1 className="welcome-text">Welcome, {username}!</h1>
+
             <div className="streak-counter">
                 <img src={Streak} alt="Streaks" className="streak-image" />
                 <span className="streak-amount">{streak}</span>
             </div>
         </div>
+
         <div className="boat-container">
             <div className="water"></div>
             <img src={Boat} alt={`${username}'s boat`} className="boat-avatar-home" />
@@ -81,14 +85,6 @@ export default function Home() {
                     <button className="action-btn">Invite Friends</button>
                 </Link>
             </div>
-            
-            <Link to="/QuickStartPlaceholder" className="quick-start-link">
-        <div className="quick-start">
-            <h2 className="quick-start-title">Quick Start!</h2>
-            <h2 className="quick-start-content">Calculus | Flashcards | 1 Hour</h2>
-        </div>
-        </Link>
-
         </div>
         </>
     );

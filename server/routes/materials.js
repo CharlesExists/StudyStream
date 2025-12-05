@@ -22,7 +22,7 @@ const bucket = admin.storage().bucket("studystreamnyu.firebasestorage.app");
 router.post(
   "/materials/create",
   verifyToken,
-upload.single("file"),
+  upload.single("file"),
   async (req, res) => {
     try {
       const uid = req.user.uid;
@@ -32,7 +32,7 @@ upload.single("file"),
         return res.status(400).json({ error: "Missing required fields." });
       }
 
-      if (!["file", "flashcards"].includes(type)) {
+      if (!["file", "flashcards", "flashcards_csv"].includes(type)) {
         return res.status(400).json({ error: "Invalid material type." });
       }
 
@@ -41,7 +41,7 @@ upload.single("file"),
       let flashcardsData = null;
 
       /* ===============================
-         FILE MATERIAL
+         FILE MATERIAL (PDF, IMAGE, etc)
       =============================== */
       if (type === "file") {
         if (!req.file) {
@@ -66,33 +66,95 @@ upload.single("file"),
         fileUrl = url;
       }
 
-      /* ===============================
-         FLASHCARDS MATERIAL
-      =============================== */
-      if (type === "flashcards") {
-        try {
-          flashcardsData = JSON.parse(req.body.flashcards);
-        } catch (err) {
-          return res.status(400).json({ error: "Invalid flashcards JSON." });
-        }
+/* ===============================
+   FLASHCARDS JSON MATERIAL (FIXED + NORMALIZED)
+=============================== */
+if (type === "flashcards") {
+  if (!req.file) {
+    return res.status(400).json({ error: "JSON file required." });
+  }
 
-        if (!Array.isArray(flashcardsData)) {
-          return res
-            .status(400)
-            .json({ error: "Flashcards must be an array." });
-        }
-      }
+  let raw;
+
+  // Parse JSON file
+  try {
+    raw = JSON.parse(req.file.buffer.toString("utf-8"));
+  } catch (err) {
+    return res.status(400).json({ error: "Invalid flashcards JSON file." });
+  }
+
+  // Allow { cards: [...] }
+  if (raw.cards && Array.isArray(raw.cards)) {
+    raw = raw.cards;
+  }
+
+  // Convert any shape → { front, back }
+  flashcardsData = raw
+    .map((c) => {
+      const front =
+        c.front ||
+        c.term ||
+        c.word ||
+        c.prompt ||
+        c.question ||
+        null;
+
+      const back =
+        c.back ||
+        c.definition ||
+        c.meaning ||
+        c.answer ||
+        c.response ||
+        null;
+
+      if (!front || !back) return null;
+
+      return {
+        front: front.toString().trim(),
+        back: back.toString().trim(),
+      };
+    })
+    .filter(Boolean);
+
+  if (!flashcardsData.length) {
+    return res.status(400).json({
+      error: "No valid flashcards found in JSON (expected front/back or term/definition pairs).",
+    });
+  }
+}
+
+/* ===============================
+   FLASHCARDS CSV MATERIAL 
+=============================== */
+if (type === "flashcards_csv") {
+  if (!req.file) {
+    return res.status(400).json({ error: "CSV file required." });
+  }
+
+  const csvText = req.file.buffer.toString("utf-8");
+  const lines = csvText.split("\n");
+
+  flashcardsData = lines
+    .map((line) => line.split(","))
+    .filter(row => row.length >= 2)
+    .map(([front, back]) => ({
+      front: front?.trim(),
+      back: back?.trim(),
+    }))
+    .filter(card => card.front && card.back);
+}
+
 
       /* ===============================
           MATERIAL OBJECT
       =============================== */
       const materialData = {
         title,
-        type,
+        type: type.includes("flashcards") ? "flashcards" : "file",
         ownerId: uid,
         shared: shared === "true" || shared === true,
         fileUrl: fileUrl || null,
-        filePath: filePath || null, // IMPORTANT
+        filePath: filePath || null,
         flashcards: flashcardsData || null,
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -100,24 +162,24 @@ upload.single("file"),
 
       // Save under user collection
       const userRef = db
-    .collection("users")
-    .doc(uid)
-    .collection("materials");
+        .collection("users")
+        .doc(uid)
+        .collection("materials");
 
-    const docRef = await userRef.add(materialData);
+      const docRef = await userRef.add(materialData);
 
-        // Add to shared list if shared
-    if (materialData.shared) {
-  await db.collection("sharedMaterials").doc(docRef.id).set({
-    materialId: docRef.id,
-    ownerId: uid,
-    title,
-    type,
-    fileUrl,
-    filePath,
-    createdAt: materialData.createdAt,
-  });
-    }
+      // Add to shared list if shared
+      if (materialData.shared) {
+        await db.collection("sharedMaterials").doc(docRef.id).set({
+          materialId: docRef.id,
+          ownerId: uid,
+          title,
+          type: materialData.type,
+          fileUrl,
+          filePath,
+          createdAt: materialData.createdAt,
+        });
+      }
 
       res.status(201).json({
         message: "Material created",
@@ -139,7 +201,7 @@ upload.single("file"),
 
 router.get("/materials", verifyToken, async (req, res) => {
   try {
-    const uid = req.user.uid; // <-- FIXED VARIABLE NAME
+    const uid = req.user.uid;
 
     const snap = await db
       .collection("users")
@@ -216,23 +278,15 @@ router.delete("/materials/:materialId", verifyToken, async (req, res) => {
 
     const material = materialSnap.data();
 
-    // Delete file from storage properly using filePath
+    // Delete file from storage properly
     if (material.type === "file" && material.filePath) {
       try {
         const file = bucket.file(material.filePath);
         await file.delete();
-        console.log("Deleted file:", material.filePath);
-      } catch (err) {
-        console.warn(
-          "Failed to delete file from storage (may already be removed)."
-        );
-      }
+      } catch {}
     }
 
-    // Delete Firestore material
     await materialRef.delete();
-
-    // Remove from sharedMaterials
     await db.collection("sharedMaterials").doc(materialId).delete().catch(() => {});
 
     res.status(200).json({

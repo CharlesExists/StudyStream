@@ -1,59 +1,62 @@
 import express from "express";
-import admin from "firebase-admin";
+import { db, tsToISO } from "../firebase.js";
 import { verifyToken } from "../middleware/authMiddleware.js";
 
+// SINGLE router definition
 const router = express.Router();
-const db = admin.firestore();
 
 /* =========================================
    SEND FRIEND REQUEST
-   POST /api/friends/request
 ========================================= */
 router.post("/friends/request", verifyToken, async (req, res) => {
   try {
     const fromUserId = req.user.uid;
     const { toUserId } = req.body;
 
-    if (!toUserId) {
+    if (!toUserId)
       return res.status(400).json({ error: "toUserId is required" });
-    }
 
-    if (fromUserId === toUserId) {
+    if (fromUserId === toUserId)
       return res.status(400).json({ error: "You cannot friend yourself" });
-    }
 
-    // prevent duplicate requests 
-    const existing = await db
+    const friendsSnap = await db
+      .collection("friends")
+      .doc(fromUserId)
+      .collection("userFriends")
+      .doc(toUserId)
+      .get();
+
+    if (friendsSnap.exists)
+      return res.status(400).json({ error: "Already friends" });
+
+    const pendingSnap = await db
       .collection("friendRequests")
       .where("fromUserId", "==", fromUserId)
       .where("toUserId", "==", toUserId)
       .where("status", "==", "pending")
       .get();
 
-    if (!existing.empty) {
-      return res.status(400).json({ error: "Friend request already sent" });
-    }
+    if (!pendingSnap.empty)
+      return res.status(400).json({ error: "Request already sent" });
 
-    const requestRef = await db.collection("friendRequests").add({
+    const newRequest = {
       fromUserId,
       toUserId,
       status: "pending",
-      createdAt: admin.firestore.FieldValue.serverTimestamp()
-    });
+      createdAt: new Date(),
+    };
 
-    res.status(201).json({
-      message: "Friend request sent",
-      requestId: requestRef.id
-    });
+    const docRef = await db.collection("friendRequests").add(newRequest);
+
+    res.json({ id: docRef.id, ...newRequest, createdAt: newRequest.createdAt.toISOString() });
   } catch (err) {
-    console.error("Send friend request error:", err);
+    console.error("Send request error:", err);
     res.status(500).json({ error: "Failed to send friend request" });
   }
 });
 
 /* =========================================
-   GET MY INCOMING FRIEND REQUESTS
-   GET /api/friends/requests
+   GET INCOMING FRIEND REQUESTS
 ========================================= */
 router.get("/friends/requests", verifyToken, async (req, res) => {
   try {
@@ -65,70 +68,95 @@ router.get("/friends/requests", verifyToken, async (req, res) => {
       .where("status", "==", "pending")
       .get();
 
-    const requests = snapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    }));
+    const requests = await Promise.all(
+      snapshot.docs.map(async (doc) => {
+        const data = doc.data();
+        const senderDoc = await db.collection("users").doc(data.fromUserId).get();
+        const sender = senderDoc.data() || {};
+
+        return {
+          requestId: doc.id,
+          uid: data.fromUserId,
+          name: sender.name || "",
+          email: sender.email || "",
+          createdAt: tsToISO(data.createdAt),
+        };
+      })
+    );
 
     res.json(requests);
   } catch (err) {
-    console.error("Fetch requests error:", err);
-    res.status(500).json({ error: "Failed to fetch friend requests" });
+    console.error("Incoming requests error:", err);
+    res.status(500).json({ error: "Failed to fetch incoming friend requests" });
+  }
+});
+
+/* =========================================
+   GET OUTGOING FRIEND REQUESTS
+========================================= */
+router.get("/friends/requests/outgoing", verifyToken, async (req, res) => {
+  try {
+    const uid = req.user.uid;
+
+    const snapshot = await db
+      .collection("friendRequests")
+      .where("fromUserId", "==", uid)
+      .where("status", "==", "pending")
+      .get();
+
+    const requests = await Promise.all(
+      snapshot.docs.map(async (doc) => {
+        const data = doc.data();
+        const targetUserDoc = await db.collection("users").doc(data.toUserId).get();
+        const targetUser = targetUserDoc.data() || {};
+
+        return {
+          requestId: doc.id,
+          uid: data.toUserId,
+          name: targetUser.name || "",
+          email: targetUser.email || "",
+          createdAt: tsToISO(data.createdAt),
+        };
+      })
+    );
+
+    res.json(requests);
+  } catch (err) {
+    console.error("Outgoing requests error:", err);
+    res.status(500).json({ error: "Failed to fetch outgoing friend requests" });
   }
 });
 
 /* =========================================
    ACCEPT FRIEND REQUEST
-   POST /api/friends/:requestId/accept
 ========================================= */
 router.post("/friends/:requestId/accept", verifyToken, async (req, res) => {
   try {
     const uid = req.user.uid;
     const { requestId } = req.params;
 
-    const requestRef = db.collection("friendRequests").doc(requestId);
-    const snap = await requestRef.get();
-
-    if (!snap.exists) {
+    const requestDoc = await db.collection("friendRequests").doc(requestId).get();
+    if (!requestDoc.exists)
       return res.status(404).json({ error: "Request not found" });
-    }
 
-    const { fromUserId, toUserId } = snap.data();
+    const request = requestDoc.data();
+    if (request.toUserId !== uid)
+      return res.status(403).json({ error: "Not authorized" });
 
-    if (toUserId !== uid) {
-      return res.status(403).json({ error: "Not authorized to accept this request" });
-    }
+    await requestDoc.ref.update({ status: "accepted" });
 
-    // add friends
-    const batch = db.batch();
-
-    const userAFriendRef = db
-      .collection("users")
-      .doc(fromUserId)
-      .collection("friends")
-      .doc(toUserId);
-
-    const userBFriendRef = db
-      .collection("users")
-      .doc(toUserId)
-      .collection("friends")
-      .doc(fromUserId);
-
-    batch.set(userAFriendRef, {
-      since: admin.firestore.FieldValue.serverTimestamp()
+    // add both directions
+    await db.collection("friends").doc(uid).collection("userFriends").doc(request.fromUserId).set({
+      friendId: request.fromUserId,
+      createdAt: new Date(),
     });
 
-    batch.set(userBFriendRef, {
-      since: admin.firestore.FieldValue.serverTimestamp()
+    await db.collection("friends").doc(request.fromUserId).collection("userFriends").doc(uid).set({
+      friendId: uid,
+      createdAt: new Date(),
     });
 
-    batch.update(requestRef, {
-      status: "accepted"
-    });
-
-    await batch.commit();
-
-    res.json({ message: "Friend request accepted" });
+    res.json({ success: true });
   } catch (err) {
     console.error("Accept request error:", err);
     res.status(500).json({ error: "Failed to accept request" });
@@ -137,28 +165,23 @@ router.post("/friends/:requestId/accept", verifyToken, async (req, res) => {
 
 /* =========================================
    DECLINE FRIEND REQUEST
-   POST /api/friends/:requestId/decline
 ========================================= */
 router.post("/friends/:requestId/decline", verifyToken, async (req, res) => {
   try {
     const uid = req.user.uid;
     const { requestId } = req.params;
 
-    const requestRef = db.collection("friendRequests").doc(requestId);
-    const snap = await requestRef.get();
-
-    if (!snap.exists) {
+    const requestDoc = await db.collection("friendRequests").doc(requestId).get();
+    if (!requestDoc.exists)
       return res.status(404).json({ error: "Request not found" });
-    }
 
-    const { toUserId } = snap.data();
-    if (toUserId !== uid) {
+    const request = requestDoc.data();
+    if (request.toUserId !== uid)
       return res.status(403).json({ error: "Not authorized" });
-    }
 
-    await requestRef.update({ status: "declined" });
+    await requestDoc.ref.update({ status: "declined" });
 
-    res.json({ message: "Friend request declined" });
+    res.json({ success: true });
   } catch (err) {
     console.error("Decline request error:", err);
     res.status(500).json({ error: "Failed to decline request" });
@@ -166,60 +189,55 @@ router.post("/friends/:requestId/decline", verifyToken, async (req, res) => {
 });
 
 /* =========================================
-   GET MY FRIEND LIST
-   GET /api/friends
+   GET FRIENDS + FRIEND SINCE
 ========================================= */
 router.get("/friends", verifyToken, async (req, res) => {
   try {
     const uid = req.user.uid;
-
-    const snapshot = await db
-      .collection("users")
-      .doc(uid)
+    const snap = await db
       .collection("friends")
+      .doc(uid)
+      .collection("userFriends")
       .get();
 
-    const friends = snapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    }));
+    const friends = await Promise.all(
+      snap.docs.map(async (doc) => {
+        const data = doc.data();
+        const friendId = data.friendId;
+        const createdAt = tsToISO(data.createdAt);
+
+        const userDoc = await db.collection("users").doc(friendId).get();
+        const userData = userDoc.data() || {};
+
+        return {
+          uid: friendId,
+          name: userData.name || "",
+          email: userData.email || "",
+          photoURL: userData.photoURL || null,
+          friendSince: createdAt,
+        };
+      })
+    );
 
     res.json(friends);
   } catch (err) {
-    console.error("Fetch friends error:", err);
-    res.status(500).json({ error: "Failed to fetch friends" });
+    console.error("Get friends error:", err);
+    res.status(500).json({ error: "Failed to fetch friends list" });
   }
 });
 
 /* =========================================
-   REMOVE FRIEND (UNFRIEND)
-   DELETE /api/friends/:friendUid
+   REMOVE FRIEND
 ========================================= */
 router.delete("/friends/:friendUid", verifyToken, async (req, res) => {
   try {
     const uid = req.user.uid;
     const { friendUid } = req.params;
 
-    const batch = db.batch();
+    await db.collection("friends").doc(uid).collection("userFriends").doc(friendUid).delete();
+    await db.collection("friends").doc(friendUid).collection("userFriends").doc(uid).delete();
 
-    const yourRef = db
-      .collection("users")
-      .doc(uid)
-      .collection("friends")
-      .doc(friendUid);
-
-    const theirRef = db
-      .collection("users")
-      .doc(friendUid)
-      .collection("friends")
-      .doc(uid);
-
-    batch.delete(yourRef);
-    batch.delete(theirRef);
-
-    await batch.commit();
-
-    res.json({ message: "Friend removed" });
+    res.json({ success: true });
   } catch (err) {
     console.error("Remove friend error:", err);
     res.status(500).json({ error: "Failed to remove friend" });

@@ -1,0 +1,65 @@
+.session-finish-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+  backdrop-filter: blur(6px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.session-finish-card {
+  background: #e9f5ff;
+  border-radius: 18px;
+  padding: 50px 60px;
+  width: 420px;
+  max-width: 90%;
+  text-align: center;
+  box-shadow: 0 10px 28px rgba(0,0,0,0.18);
+  animation: finishPopIn 300ms ease-out;
+}
+
+@keyframes finishPopIn {
+  0% { transform: scale(0.85); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.finish-title {
+  font-size: 28px;
+  font-weight: 800;
+  color: #1a6ed8;
+  margin-bottom: 10px;
+  font-family: "Young Serif", serif;
+}
+
+.finish-subject {
+  font-size: 20px;
+  font-weight: 600;
+  color: #2466db;
+  margin-bottom: 6px;
+}
+
+.finish-message {
+  font-size: 16px;
+  color: #4b5563;
+  margin-bottom: 32px;
+}
+
+.finish-home-btn {
+  background: #2466db;
+  color: white;
+  padding: 12px 30px;
+  border-radius: 12px;
+  border: none;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 17px;
+  box-shadow: 0 4px 12px rgba(36,102,219,0.2);
+  transition: transform 0.15s ease, background 0.2s ease;
+}
+
+.finish-home-btn:hover {
+  background: #1b53b4;
+  transform: translateY(-2px);
+}
